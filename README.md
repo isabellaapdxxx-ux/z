@@ -9,7 +9,7 @@
 | Part | File | Notes |
 |---|---|---|
 | Script | `src/script_data.py` | All voice lines with start times. Caption key words are marked `*LIKE THIS*`. |
-| Audio | `src/audio.py` | Piper TTS voices, an original synthesized score (eerie music-box theme → tension → heroic) and ~30 synthesized sound effects, mixed and normalized to about −14 LUFS. Writes `build/audio.wav` and `build/vo_timing.json` (per-word timings). |
+| Audio | `src/audio.py` | Kokoro neural TTS voices (boy: `am_puck`, cousin: `am_fenrir`, operator: `af_heart`, police: `am_michael`), an original synthesized score (eerie music-box theme → tension → heroic) and ~30 synthesized sound effects, mixed and normalized to about −14 LUFS. Writes `build/audio.wav` and `build/vo_timing.json` (per-word timings). |
 | 3D renderer | `src/engine3d.py` | A small software renderer for blocky box scenes: painter's algorithm, flat lighting with point and spot lights, fog, textured decals and planar shadows. |
 | Characters/props | `src/assets.py`, `src/sets.py` | Original blocky characters (boy, cousin, police) and sets (basement, house, hallway, locked room, closet, police car). Faces, posters, newspaper, list, clock and phone screens are drawn with Pillow. |
 | Shots | `src/shots.py` | The 40-shot timeline: cameras, animation and per-shot effects. |
@@ -20,13 +20,13 @@
 ## Rebuild
 
 ```bash
-pip install numpy scipy pillow piper-tts
-# voices (Piper v0.0.2 release): lessac-medium, ryan-high, libritts-high, extracted into $VOICES/<name>/
+pip install numpy scipy pillow kokoro-onnx
+# $VOICES must contain kokoro-v1.0.onnx and voices-v1.0.bin
 python src/audio.py --voices $VOICES --out build
 python src/render.py video --workers 4
 python src/render.py mux
 python src/storyboard.py
 ```
 
-Voice models are not stored in this repository. They come from the `rhasspy/piper` GitHub release `v0.0.2`
-(`voice-en-us-lessac-medium.tar.gz`, `voice-en-us-ryan-high.tar.gz`, `voice-en-us-libritts-high.tar.gz`).
+Voice models are not stored in this repository. They come from the `thewh1teagle/kokoro-onnx` GitHub release
+`model-files-v1.0` (`kokoro-v1.0.onnx`, `voices-v1.0.bin`).

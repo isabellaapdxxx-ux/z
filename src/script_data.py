@@ -8,8 +8,8 @@ timed precisely against the voice.
 # (id, start_seconds, speaker, caption_text, options)
 LINES = [
     # ---- HOOK
-    ('h1', 0.00, 'narr', 'My cousin heard me call *911*...', {'fit': 1.45}),
-    ('h2', 1.55, 'narr', "...and now I'm in his *BASEMENT*.", {'fit': 1.4}),
+    ('h1', 0.00, 'narr', 'My cousin heard me call *911*...', {'fit': 1.45, 'speed': 1.2}),
+    ('h2', 1.55, 'narr', "...and now I'm in his *BASEMENT*.", {'fit': 1.4, 'speed': 1.15}),
     ('h3', 3.0, 'cousin', "You shouldn't have looked in that room.", {'fit': 1.85}),
     # ---- 1. NORMAL DAY
     ('s1', 6.25, 'narr', 'Three hours earlier, I was visiting my older cousin Derek.', {}),

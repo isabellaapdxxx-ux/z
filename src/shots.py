@@ -1,5 +1,7 @@
 """Shot list: maps every time t in [0,120) to a rendered frame + post settings."""
+import json
 import math
+import os
 import random
 
 import numpy as np
@@ -15,6 +17,26 @@ SS = 2
 R = Renderer(W, H, ss=SS)
 
 CX, CY, CZ = SE.CHAIR_POS
+
+_TIMING = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'build', 'vo_timing.json')
+
+
+def word_t(lid, word, default):
+    """Start time of a spoken word (so visual hits stay synced with the voice/bass hits)."""
+    try:
+        for L in json.load(open(_TIMING))['lines']:
+            if L['id'] == lid:
+                for w in L['words']:
+                    if word.lower() in w['w'].lower():
+                        return w['t0']
+    except (OSError, ValueError, KeyError):
+        pass
+    return default
+
+
+T_LOCKED = word_t('s6', 'LOCKED', 23.35)
+T_MISSING = word_t('d3', 'MISSING', 39.33)
+T_KILLER = word_t('d7', 'KILLER', 51.37)
 
 
 # ------------------------------------------------------------------ helpers
@@ -241,7 +263,7 @@ def sh_hallway(t, lt):
     sc = hall_scene()
     sc.add(SE.locked_door((0, 0, -29.85)))
     k = ease(lt / 5.7)
-    hit = t - 23.35
+    hit = t - T_LOCKED
     cam = Camera(lv((0.6, 5.6, 3.0), (0.2, 4.9, -19.5), k), (0.0, 4.4, -30), fov=56)
     img = render(sc, cam)
     return F(img, vig=0.6 + 0.2 * k, grain=4, zoom=1.0 + (0.25 * ease(hit / 0.25) if hit > 0 else 0),
@@ -320,7 +342,7 @@ def sh_posters(t, lt):
     yaw = rad(lerp(-38, 30, ease(lt / 3.3)))
     boy = A.character(A.BOY, (0.0, 0, 5.0), 180, 'scared', arm_r=80, roll_r=-5)
     sc = locked_scene(yaw, 0.12, boy=boy)
-    hit = t - 39.33
+    hit = t - T_MISSING
     k = ease(lt / 3.3)
     cam = Camera(lv((2.4, 6.4, 12.0), (1.6, 5.6, 9.5), k), lv((-2.5, 4.8, -8.0), (2.0, 4.8, -8.0), k), fov=58)
     img = render(sc, cam)
@@ -354,7 +376,7 @@ def sh_boy_face(t, lt):
     sc = locked_scene(rad(180), 0.0, src=(0.6, 3.0, 2.8),
                       extra=[Light((0.5, 2.4, 3.6), (220, 230, 255), 1.6, 3.5)])
     sc.add(boy)
-    hit = t - 51.37
+    hit = t - T_KILLER
     cam = Camera((0.35, 4.9, 6.0), (0.0, 4.55, 2.0), fov=50)
     img = render(sc, cam)
     return F(img, vig=0.75, grain=7, bloom=0.3, zoom=(1 + 0.05 * lt) * (punch(hit, 0.22, 0.2) if hit > 0 else 1),

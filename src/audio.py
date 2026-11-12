@@ -1,7 +1,7 @@
 """Builds the full 120 s soundtrack: TTS voiceover, original synthesized music
 and synthesized sound effects. Writes build/audio.wav + build/vo_timing.json.
 
-usage: python src/audio.py --voices <dir with piper voices> --out build
+usage: python src/audio.py --voices <dir with kokoro-v1.0.onnx + voices-v1.0.bin> --out build
 """
 import argparse
 import io
@@ -603,19 +603,15 @@ def build_music():
 
 # ===================================================================== TTS
 
+# Kokoro voices (higher quality neural TTS). speed > 1 = faster, pitch = rubberband pitch factor.
 SPEAKERS = {
-    'narr': dict(model='lessac', pitch=1.17, ls=0.9, fx=None),
-    'boy': dict(model='lessac', pitch=1.19, ls=0.95, fx='room'),
-    'whisper': dict(model='lessac', pitch=1.17, ls=1.0, fx='whisper'),
-    'cousin': dict(model='ryan', pitch=0.85, ls=1.15, fx='creep'),
-    'cousin_nice': dict(model='ryan', pitch=0.93, ls=0.95, fx='room'),
-    'operator': dict(model='libritts', sid=603, pitch=1.0, ls=0.95, fx='phone'),
-    'cop': dict(model='libritts', sid=342, pitch=0.97, ls=0.88, fx='shout'),
-}
-MODELS = {
-    'lessac': 'lessac-medium/en-us-lessac-medium.onnx',
-    'ryan': 'ryan-high/en-us-ryan-high.onnx',
-    'libritts': 'libritts-high/en-us-libritts-high.onnx',
+    'narr': dict(voice='am_puck', pitch=1.06, speed=1.05, fx=None),
+    'boy': dict(voice='am_puck', pitch=1.08, speed=1.0, fx='room'),
+    'whisper': dict(voice='am_puck', pitch=1.06, speed=1.0, fx='whisper'),
+    'cousin': dict(voice='am_fenrir', pitch=0.94, speed=0.88, fx='creep'),
+    'cousin_nice': dict(voice='am_fenrir', pitch=1.0, speed=1.05, fx='room'),
+    'operator': dict(voice='af_heart', pitch=1.0, speed=1.05, fx='phone'),
+    'cop': dict(voice='am_michael', pitch=1.0, speed=1.12, fx='shout'),
 }
 PAUSE = {'...': 0.34, '.': 0.2, '?': 0.2, '!': 0.16}
 
@@ -675,22 +671,16 @@ def trim(x, thr=0.012):
 
 
 class TTS:
-    def __init__(self, vdir):
-        from piper import PiperVoice
-        self.v = {k: PiperVoice.load(os.path.join(vdir, p)) for k, p in MODELS.items()}
+    """Kokoro TTS. vdir must contain kokoro-v1.0.onnx and voices-v1.0.bin."""
 
-    def synth(self, text, spk):
-        from piper import SynthesisConfig
+    def __init__(self, vdir):
+        from kokoro_onnx import Kokoro
+        self.k = Kokoro(os.path.join(vdir, 'kokoro-v1.0.onnx'), os.path.join(vdir, 'voices-v1.0.bin'))
+
+    def synth(self, text, spk, speed_mul=1.0):
         cfg = SPEAKERS[spk]
-        b = io.BytesIO()
-        with wave.open(b, 'wb') as w:
-            self.v[cfg['model']].synthesize_wav(text, w, SynthesisConfig(
-                speaker_id=cfg.get('sid'), length_scale=cfg['ls'], noise_scale=0.6, noise_w_scale=0.7))
-        b.seek(0)
-        with wave.open(b) as w:
-            sr = w.getframerate()
-            x = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(float) / 32768
-        return x, sr
+        x, sr = self.k.create(text, voice=cfg['voice'], speed=cfg['speed'] * speed_mul, lang='en-us')
+        return np.asarray(x, float), sr
 
 
 def voice_fx(x, fx):
@@ -727,13 +717,16 @@ def build_vo(vdir, outdir):
         segs = split_segments(text)
         raw = []
         for seg in segs:
-            x, sr = tts.synth(tts_text(seg), spk)
+            x, sr = tts.synth(tts_text(seg), spk, opt.get('speed', 1.0))
             raw.append((trim(x), sr))
 
         def render(tempo):
             parts = []
             for (x, sr), seg in zip(raw, segs):
-                af = f"rubberband=pitch={cfg['pitch']}:tempo={tempo:.4f}:pitchq=quality"
+                if abs(cfg['pitch'] - 1) < 1e-3 and abs(tempo - 1) < 1e-3:
+                    af = 'anull'
+                else:
+                    af = f"rubberband=pitch={cfg['pitch']}:tempo={tempo:.4f}:pitchq=quality:formant=preserved"
                 parts.append(ff_proc(x, sr, af))
             return parts
         parts = render(1.0)
