@@ -88,54 +88,183 @@ SHOTS = [
     (117.5, 120.0, 'final_flicker', {}),
 ]
 
-# --------------------------------------------------------------------------- captions
-CAPTIONS = [
-    (0.00, 1.00, 'My neighbor is a ~KILLER~…'),
-    (1.00, 2.50, '…and I\'m *NEXT.*'),
-    (2.62, 3.50, 'Here\'s how it happened…'),
-    (4.20, 7.40, 'Quiet street. Nothing ever happened.'),
-    (7.50, 10.90, 'Then *HE* moved in next door.'),
-    (11.00, 13.00, 'Mr. Gray.'),
-    (13.10, 16.40, 'He watched me. Every. Single. Day.'),
-    (16.50, 19.40, 'The new neighbor *never* blinked.'),
-    (19.50, 21.90, 'Not. Once.'),
-    (22.10, 25.90, 'That night I couldn\'t sleep.'),
-    (26.00, 27.90, 'A light. In his *basement.*'),
-    (28.00, 31.90, 'So I snuck over…'),
-    (32.00, 33.90, 'and looked inside.'),
-    (34.10, 36.90, 'He was dragging something…'),
-    (37.00, 38.90, 'Something *heavy.*'),
-    (39.00, 41.90, '*MISSING.* All of them.'),
-    (42.00, 43.90, 'And a *shovel.*'),
-    (44.00, 45.90, 'My heart stopped.'),
-    (48.20, 51.90, 'Then he stopped too.'),
-    (52.00, 53.20, '*HE SAW ME.*'),
-    (53.25, 56.90, '~RUN.~'),
-    (57.00, 58.90, 'His light went out.'),
-    (59.10, 60.90, 'I made it home…'),
-    (61.00, 62.90, 'I was safe. Right?'),
-    (63.20, 64.90, '*Wrong.*'),
-    (65.70, 66.90, 'Everything went black.'),
-    (67.10, 68.90, 'When I woke up…'),
-    (69.00, 71.90, 'I was tied to a chair.'),
-    (72.00, 73.90, 'In *HIS* basement.'),
-    (74.10, 77.90, 'Then… *footsteps.*'),
-    (78.00, 81.90, 'Slow. Heavy. Coming closer.'),
-    (82.00, 83.90, 'Wait… my *PHONE!*'),
-    (84.00, 87.90, 'Still in my pocket.'),
-    (88.00, 89.90, 'I had one chance.'),
-    (90.00, 93.90, '9… 1… 1…'),
-    (94.00, 96.90, '"Please *HELP…*'),
-    (97.00, 98.90, '…my neighbor…'),
-    (99.00, 100.90, '*42 Elm Street.*"'),
-    (101.00, 102.90, 'He was right behind me.'),
-    (105.00, 106.90, 'He reached for me…'),
-    (107.00, 108.90, 'Then… *SIRENS!*'),
-    (109.00, 110.40, '"*POLICE!* FREEZE!"'),
-    (110.50, 112.40, 'They got here *just in time.*'),
-    (112.50, 114.90, 'Mr. Gray was *arrested.*'),
-    (115.10, 120.00, 'Always trust your gut. 👀'),
+# --------------------------------------------------------------------------- voice script
+# (start s, speaker, style, text[, must_end_by s])
+# speakers: narr (Timmy telling the story, voice-over), timmy, gray, op (911 operator), cop, cop2
+# styles:   normal | whisper | shout | phone
+# Caption markup: *word* = red, ~word~ = red + shaking. Dialogue captions get quote marks automatically.
+VOICE_LINES = [
+    # HOOK
+    (0.05, 'narr', 'normal', "My neighbor is a ~KILLER~… and I'm *NEXT.*", 2.45),
+    (2.62, 'narr', 'normal', "Here's how it happened…", 3.45),
+    # SETUP
+    (4.20, 'narr', 'normal', 'Our street was quiet. Nothing ever happened here.'),
+    (7.50, 'narr', 'normal', 'Then a new neighbor moved in next door.'),
+    (10.90, 'gray', 'normal', "Hello there. I'm *Mr. Gray.*"),
+    (13.20, 'timmy', 'normal', 'Uh… hi, Mr. Gray.'),
+    (14.90, 'narr', 'normal', 'He watched me. Every single day.'),
+    (16.90, 'narr', 'normal', 'And he *never* blinked.'),
+    (18.60, 'timmy', 'normal', 'Bye, Mr. Gray!'),
+    (20.30, 'gray', 'normal', 'See you *soon,* Timmy.'),
+    # DISCOVERY
+    (22.20, 'narr', 'normal', "That night, I couldn't sleep."),
+    (24.30, 'timmy', 'normal', "Huh? What's that?"),
+    (26.00, 'narr', 'normal', 'A light. In his *basement.*'),
+    (28.10, 'narr', 'normal', 'So I snuck over…'),
+    (30.20, 'timmy', 'whisper', 'Just one quick look.'),
+    (32.10, 'narr', 'normal', '…and looked inside.'),
+    (34.10, 'narr', 'normal', 'He was dragging something…'),
+    (36.90, 'narr', 'normal', 'Something *heavy.*'),
+    (39.00, 'narr', 'normal', '*MISSING* posters. All of them.'),
+    (42.00, 'narr', 'normal', 'And a *shovel.*'),
+    (44.10, 'timmy', 'whisper', 'No… no way…', 45.9),
+    # SPOTTED
+    (48.20, 'narr', 'normal', 'Then he stopped.'),
+    (50.60, 'gray', 'normal', 'I *see* you, Timmy.', 51.92),
+    (53.30, 'timmy', 'shout', '~RUN!~ ~RUN!~', 55.5),
+    (57.00, 'narr', 'normal', 'His light went out.'),
+    (59.10, 'narr', 'normal', 'I made it home…'),
+    (61.00, 'timmy', 'normal', "I'm safe… I'm safe…"),
+    (63.20, 'narr', 'normal', '*Wrong.*', 63.95),
+    (64.05, 'gray', 'whisper', 'Found you.', 64.97),
+    # KIDNAPPED
+    (65.70, 'narr', 'normal', 'Everything went black.'),
+    (67.10, 'narr', 'normal', 'When I woke up…'),
+    (69.00, 'narr', 'normal', 'I was tied to a chair.'),
+    (70.70, 'narr', 'normal', 'In *HIS* basement.'),
+    (72.00, 'timmy', 'shout', '*HELP!* Somebody help me!'),
+    (74.10, 'narr', 'normal', 'Then… *footsteps.*'),
+    (76.10, 'gray', 'normal', 'Timmy… are you awake?'),
+    (78.10, 'narr', 'normal', 'Slow. Heavy. Coming closer.'),
+    (80.10, 'gray', 'normal', 'You found my little *secret.*'),
+    (82.00, 'narr', 'normal', 'Wait… my *PHONE!*'),
+    (84.00, 'narr', 'normal', 'Still in my pocket.'),
+    (86.00, 'gray', 'normal', "Don't be scared, Timmy."),
+    (88.00, 'narr', 'normal', 'I had one chance.', 89.9),
+    # THE CALL
+    (93.40, 'op', 'phone', "911, what's your emergency?"),
+    (94.90, 'timmy', 'whisper', 'Please *HELP* me…'),
+    (96.50, 'op', 'phone', 'Where are you?'),
+    (97.40, 'timmy', 'whisper', 'My neighbor took me…'),
+    (99.00, 'timmy', 'whisper', '*42 Elm Street.* Hurry!'),
+    (100.90, 'op', 'phone', 'Officers are on the way. Stay on the line.'),
+    (103.10, 'narr', 'normal', 'He was right behind me.', 104.95),
+    # JUST IN TIME
+    (105.00, 'gray', 'normal', 'Who are you talking to, Timmy?', 106.95),
+    (107.30, 'narr', 'normal', 'Then… *SIRENS!*'),
+    (109.15, 'cop', 'shout', '*POLICE!* FREEZE!'),
+    (110.50, 'narr', 'normal', 'They got here *just in time.*'),
+    (112.40, 'cop2', 'normal', "You're under *arrest.*"),
+    (113.70, 'gray', 'normal', 'See you *soon,* Timmy.', 115.1),
+    # ENDING
+    (115.20, 'cop', 'normal', "You're safe now, kid."),
+    (116.80, 'narr', 'normal', 'Always trust your gut. 👀', 118.6),
 ]
+DIALOGUE_SPEAKERS = ('timmy', 'gray', 'op', 'cop', 'cop2')
+
+# Captions that have no voice (the sting and the dialing)
+SILENT_CAPTIONS = [
+    (52.00, 53.25, '*HE SAW ME.*'),
+    (90.00, 93.30, '9… 1… 1…'),
+]
+
+MAX_CAPTION_WORDS = 5
+
+
+def _words_with_markup(text):
+    """Split into words, putting the */~ markup on each word so captions can be cut anywhere."""
+    out, style = [], None
+    for tok in text.split():
+        st = style
+        if tok.startswith('~') or tok.startswith('*'):
+            st = tok[0]
+            tok = tok[1:]
+            style = st
+        end = False
+        for m in '~*':
+            if m in tok:
+                tok = tok.replace(m, '')
+                end = True
+        out.append(f'{st}{tok}{st}' if st else tok)
+        if end:
+            style = None
+    return out
+
+
+def _chunks(words, n=MAX_CAPTION_WORDS):
+    """Split a line into caption chunks of <= n words, preferring breaks after punctuation."""
+    if len(words) <= n:
+        return [words]
+    out, cur = [], []
+    for i, w in enumerate(words):
+        cur.append(w)
+        rest = len(words) - i - 1
+        punct = w.rstrip('*~')[-1:] in '.,!?…'
+        if len(cur) >= n or (punct and len(cur) >= 2 and rest >= 2):
+            out.append(cur)
+            cur = []
+    if cur:
+        if len(cur) == 1 and out and len(out[-1]) < n + 1:
+            out[-1] += cur
+        else:
+            out.append(cur)
+    return out
+
+
+def make_captions(timings):
+    """timings: list of dicts (start, end, speaker, text) measured from the generated voice.
+    Returns [(start, end, caption)] with each line cut into short chunks timed by character count."""
+    caps = []
+    lines = sorted(timings, key=lambda d: d['start'])
+    for k, ln in enumerate(lines):
+        words = _words_with_markup(ln['text'])
+        chunks = _chunks(words)
+        nxt = lines[k + 1]['start'] if k + 1 < len(lines) else DURATION
+        for a, b, _ in SILENT_CAPTIONS:
+            if ln['start'] < a < nxt:
+                nxt = a
+        hold_end = min(nxt, ln['end'] + 0.9) if nxt - ln['end'] < 2.5 else ln['end'] + 0.9
+        if k + 1 == len(lines):
+            hold_end = DURATION
+        if ln.get('until'):
+            hold_end = min(hold_end, ln['until'])
+        dur = ln['end'] - ln['start']
+        total = sum(len(''.join(c)) for c in chunks)
+        t = ln['start'] if ln['start'] > 0.1 else 0.0
+        quote = ln['speaker'] in DIALOGUE_SPEAKERS
+        for i, c in enumerate(chunks):
+            share = dur * len(''.join(c)) / total
+            text = ' '.join(c)
+            if quote and i == 0:
+                text = '"' + text
+            if quote and i == len(chunks) - 1:
+                text = text + '"'
+            end = t + share if i < len(chunks) - 1 else hold_end
+            caps.append((round(t, 3), round(end, 3), text))
+            t += share
+    caps += SILENT_CAPTIONS
+    return sorted(caps)
+
+
+def _estimated_timings():
+    out = []
+    for i, ln in enumerate(VOICE_LINES):
+        start, spk, style, text = ln[:4]
+        n = len(text.split())
+        out.append(dict(start=start, end=start + 0.35 + n / 2.8, speaker=spk, text=text,
+                        until=ln[4] if len(ln) > 4 else None))
+    return out
+
+
+def load_captions():
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'build', 'voice_lines.json')
+    if os.path.exists(p):
+        with open(p) as f:
+            return make_captions(json.load(f))
+    return make_captions(_estimated_timings())
+
+
+CAPTIONS = load_captions()
 
 TEASER = 'Wait for the ending 😳'
 
@@ -164,7 +293,6 @@ MUSIC_CUES = [
     dict(start=119.0, end=120.0, version='final_note', gain_db=-18),
 ]
 JUMP_SCARES = [1.5, 52.0, 65.0, 107.0]
-WHISPERS = [(94.3, 96.8, 'Please help…'), (97.2, 98.8, 'my neighbor…'), (99.2, 100.8, '42 Elm Street.')]
 
 
 def dump(path=None):
@@ -176,7 +304,7 @@ def dump(path=None):
                            melody=[dict(midi=m, beats=b) for m, b in THEME_MELODY], bass_per_bar=THEME_BASS,
                            final_note=dict(midi=FINAL_NOTE[0], detune_semitones=FINAL_NOTE[1])),
                 music_cues=MUSIC_CUES, jump_scares=JUMP_SCARES,
-                whispers=[dict(start=a, end=b, text=t) for a, b, t in WHISPERS])
+                voice_lines=[dict(start=v[0], speaker=v[1], style=v[2], text=v[3]) for v in VOICE_LINES])
     with open(path, 'w') as f:
         json.dump(data, f, indent=1, ensure_ascii=False)
     return path

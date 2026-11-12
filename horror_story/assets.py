@@ -154,6 +154,98 @@ _FACES = {
         "............",
         "............",
         "............"],
+    # talking variants (mouth open)
+    'talk': [
+        "............",
+        "............",
+        "............",
+        "...##..##...",
+        "...#w..#w...",
+        "...##..##...",
+        "............",
+        "....####....",
+        "....#rr#....",
+        "....####....",
+        "............",
+        "............"],
+    'talk_happy': [
+        "............",
+        "............",
+        "............",
+        "...##..##...",
+        "...#w..#w...",
+        "...##..##...",
+        "............",
+        "..#......#..",
+        "...#rrrr#...",
+        "....####....",
+        "............",
+        "............"],
+    'talk_scared': [
+        "............",
+        "..#......#..",
+        "...#....#...",
+        "..www..www..",
+        "..w#w..w#w..",
+        "..www..www.b",
+        "...........b",
+        "...######...",
+        "...#rrrr#...",
+        "...#rrrr#...",
+        "...######...",
+        "............"],
+    'whisper_open': [
+        "............",
+        "............",
+        "..##....##..",
+        "...##..##...",
+        "...#w..#w...",
+        "...##..##...",
+        "............",
+        ".....##.....",
+        "....#rr#....",
+        ".....##.....",
+        "............",
+        "............"],
+    'blank_talk': [
+        "............",
+        "............",
+        "............",
+        "...##..##...",
+        "...##..##...",
+        "............",
+        "............",
+        ".#........#.",
+        "..#rrrrrr#..",
+        "...######...",
+        "............",
+        "............"],
+    'stare_talk': [
+        "............",
+        "............",
+        "..###..###..",
+        "..###..###..",
+        "..#w#..#w#..",
+        "..###..###..",
+        "............",
+        "#..........#",
+        ".##########.",
+        ".#rrrrrrrr#.",
+        "..#.#.#.#.#.",
+        "............"],
+    'cop_talk': [
+        "............",
+        "............",
+        "..###..###..",
+        "............",
+        "...##..##...",
+        "...##..##...",
+        "............",
+        "............",
+        "...######...",
+        "...#rrrr#...",
+        "...######...",
+        "............"],
 }
 _PAL = {'#': (18, 18, 22, 255), 'w': (245, 245, 245, 255), 'r': (140, 30, 40, 255), 'b': (120, 190, 255, 255)}
 
@@ -227,11 +319,34 @@ COP2 = Look(skin=(236, 200, 160), shirt=(30, 48, 105), pants=(20, 28, 60), hair=
             decal='cop', hat=(20, 28, 60))
 
 
+# ---- lip sync: shots.shot_at() sets TALK_FRAME; voices.py writes build/voice_env.json (frames with an open mouth)
+TALK_FRAME = None
+_TALK = None
+TALK_FACE = {'happy': 'talk_happy', 'neutral': 'talk', 'worried': 'talk', 'relief': 'talk_happy',
+             'scared': 'talk_scared', 'whisper': 'whisper_open', 'blank': 'blank_talk', 'stare': 'stare_talk',
+             'cop': 'cop_talk'}
+
+
+def _talking(look):
+    global _TALK
+    if TALK_FRAME is None:
+        return False
+    if _TALK is None:
+        import json
+        import os
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'build', 'voice_env.json')
+        _TALK = {k: set(v) for k, v in json.load(open(p)).items()} if os.path.exists(p) else {}
+    spk = {id(TIMMY): 'timmy', id(GRAY): 'gray', id(COP): 'cop', id(COP2): 'cop2'}.get(id(look))
+    return spk is not None and TALK_FRAME in _TALK.get(spk, ())
+
+
 def character(look, pos, yaw=0.0, expr='happy', arm_l=0, arm_r=0, roll_l=0, roll_r=0, leg_l=0, leg_r=0,
               head_yaw=0, head_pitch=0, head_roll=0, lean=0, bob=0.0, sit=False, tied=False, blanket=False,
               layer=1, bias=0.0, outline=0.8, color_mul=1.0):
     """Blocky character, feet at pos (or seat at pos[1]+... when sit). Front faces +z after yaw (deg)."""
     sc = look.height
+    if expr in TALK_FACE and _talking(look):
+        expr = TALK_FACE[expr]
     root = T(*pos) @ RY(rad(yaw)) @ S(sc) @ T(0, bob, 0)
     kw = dict(layer=layer, bias=bias, outline=outline)
 

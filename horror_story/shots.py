@@ -689,7 +689,7 @@ def draw_phone_ui(state, lt, gt):
             dots = '.' * (1 + int(lt * 3) % 3)
             d.text((cx, sy0 + 630), 'Calling' + dots, font=f(A.FONT_SEMI, 46), fill=(180, 185, 200), anchor='mm')
         else:
-            secs = 4 + int(lt)
+            secs = int(lt)
             d.text((cx, sy0 + 630), f'Emergency  00:{secs:02d}', font=f(A.FONT_SEMI, 46), fill=(120, 230, 140),
                    anchor='mm')
             # voice level bars (Timmy whispering)
@@ -726,11 +726,15 @@ def phone_dial(lt, u, gt, p):
 
 
 def phone_ringing(lt, u, gt, p):
+    # the operator picks up at 93.4 s
+    if gt >= 93.4:
+        return dict(img=draw_phone_ui('connected', gt - 93.4, gt), zoom=1.05 + 0.06 * u, shake=3, vig=0.75, fog=0,
+                    heart=1.0)
     return dict(img=draw_phone_ui('calling', lt, gt), zoom=1.05 + 0.06 * u, shake=3, vig=0.75, fog=0, heart=1.0)
 
 
 def phone_connected(lt, u, gt, p):
-    return dict(img=draw_phone_ui('connected', lt, gt), zoom=1.1 + 0.06 * u, shake=3, vig=0.75, fog=0, heart=1.0)
+    return dict(img=draw_phone_ui('connected', gt - 93.4, gt), zoom=1.1 + 0.06 * u, shake=3, vig=0.75, fog=0, heart=1.0)
 
 
 def whisper_close(lt, u, gt, p):
@@ -861,6 +865,7 @@ def shot_at(t, rewind=False):
         if a <= t < b or (b == SHOTS[-1][1] and t >= b):
             lt = t - a
             u = clamp(lt / (b - a))
+            A.TALK_FRAME = int(round(t * 30))
             d = _SHOT_FUNCS[name](lt, u, t, params)
             d['shot'] = name
             return d

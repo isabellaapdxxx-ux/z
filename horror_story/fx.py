@@ -321,24 +321,23 @@ def parse(text):
     out = []
     style = 'n'
     for tok in text.split(' '):
+        lq = '"' if tok.startswith('"') else ''
+        w = tok[1:] if lq else tok
+        rq = '"' if w.endswith('"') else ''
+        w = w[:-1] if rq else w
         st = style
-        w = tok
         if w.startswith('~'):
-            st = 'shake'
+            st = style = 'shake'
             w = w[1:]
-            style = 'shake'
-        elif w.startswith('*') or w.startswith('"*'):
-            st = 'red'
-            w = w.replace('*', '', 1)
-            style = 'red'
+        elif w.startswith('*'):
+            st = style = 'red'
+            w = w[1:]
         end = False
-        if '~' in w:
-            w = w.replace('~', '')
-            end = True
-        if '*' in w:
-            w = w.replace('*', '')
-            end = True
-        out.append((w, st))
+        for m in '~*':
+            if m in w:
+                w = w.replace(m, '')
+                end = True
+        out.append((lq + w + rq, st))
         if end:
             style = 'n'
     return out

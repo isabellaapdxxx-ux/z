@@ -9,7 +9,7 @@ import numpy as np
 from scipy.io import wavfile
 from scipy.signal import butter, sosfilt, fftconvolve
 
-from config import (SR, DURATION, THEME_BPM, THEME_MELODY, THEME_BASS, FINAL_NOTE, MUSIC_CUES, WHISPERS)
+from config import (SR, DURATION, THEME_BPM, THEME_MELODY, THEME_BASS, FINAL_NOTE, MUSIC_CUES)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.join(HERE, 'build')
@@ -188,10 +188,18 @@ def fit(x, dur, fi=0.4, fo=0.02):
     return fade(x[:n], fi, fo)
 
 
+def voice_spans():
+    import json
+    p = os.path.join(BUILD, 'voice_lines.json')
+    if not os.path.exists(p):
+        return []
+    return [(d['start'], d['end']) for d in json.load(open(p)) if d['speaker'] != 'narr']
+
+
 def music_bus():
     bus = np.zeros((2, N))
     duck = np.ones(N)
-    for a, b, _ in WHISPERS:  # duck the music under the whispers (-10 dB), with short ramps
+    for a, b in voice_spans():  # duck the music under every spoken line (-10 dB), with short ramps
         i0, i1 = int((a - 0.25) * SR), int((b + 0.25) * SR)
         ramp = int(0.2 * SR)
         duck[i0:i1] = np.minimum(duck[i0:i1], db(-10))
@@ -745,14 +753,6 @@ def build():
     for a in (92.1,):
         place(sfx, bp(ringback(1.5), 300, 2500), a, -20)
     place(sfx, thump(0.05, 900, 0.1, 6000), 94.0, -24)             # call connects
-    place(sfx, phone_voice(0.9, 1), 93.9, -24)                     # "911, what's your emergency?" (muffled)
-    place(sfx, whisper([('p', 'i', 0.22, 0.05), ('h', 'e', 0.25, 0.5), ('h', 'e', 0.18, 0.02), ('p', 'u', 0.1, 0.4)],
-                       seed=1), 94.4, -9, -0.1)
-    place(sfx, phone_voice(0.5, 2), 96.95, -26)
-    place(sfx, whisper([('m', 'ai', 0.2, 0.08), ('n', 'ei', 0.2, 0.03), ('p', 'o', 0.25, 0.3)], seed=2), 97.3, -9, -0.1)
-    place(sfx, whisper([('h', 'o', 0.2, 0.03), ('t', 'i', 0.12, 0.08), ('t', 'u', 0.18, 0.15), ('', 'e', 0.25, 0.06),
-                        ('s', 'i', 0.28, 0.1)], seed=3), 99.3, -9, -0.1)
-    place(sfx, phone_voice(0.7, 3), 101.0, -26)
     for k in range(6):                                              # heavy steps across the floor
         place(sfx, wood_step(60 + k, 0.8), 101.2 + k * 0.62, -10 + k * 0.8, 0.2 - k * 0.08)
     place(sfx, breath(2.0, 1.5), 103.0, -26)
@@ -792,7 +792,19 @@ def build():
     # the music is added at its absolute cue level (peaks -19..-22 dBFS), always under the sfx
     k = db(-0.5) / np.max(np.abs(amb + sfx))
     amb, sfx = amb * k * db(4), sfx * k  # ambience gets +4 dB so the quiet scenes are not too thin
-    mix = amb + sfx + mus
+    # character voices (voices.py): ambience dips 5 dB under them, so the lines read clearly
+    vp = os.path.join(BUILD, 'voice.wav')
+    voice = np.zeros((2, N))
+    if os.path.exists(vp):
+        _, v = wavfile.read(vp)
+        voice = v.T.astype(np.float64)[:, :N] / 32767.0
+        vd = np.ones(N)
+        for a, b in voice_spans():
+            i0, i1 = int((a - 0.15) * SR), int((b + 0.2) * SR)
+            vd[max(0, i0):i1] = db(-5)
+        vd = np.convolve(vd, np.ones(4800) / 4800, mode='same')
+        amb = amb * vd
+    mix = amb + sfx + mus + voice
     # make the very last frames fade cleanly
     nfo = int(0.06 * SR)
     mix[:, -nfo:] *= np.linspace(1, 0, nfo)
