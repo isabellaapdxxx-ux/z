@@ -193,7 +193,7 @@ def voice_spans():
     p = os.path.join(BUILD, 'voice_lines.json')
     if not os.path.exists(p):
         return []
-    return [(d['start'], d['end']) for d in json.load(open(p)) if d['speaker'] != 'narr']
+    return [(d['start'], d['end']) for d in json.load(open(p))]  # narration and dialogue
 
 
 def music_bus():
@@ -741,7 +741,7 @@ def build():
     k = 0
     while tstep < 90.0:                                            # slow, heavy steps down the stairs
         if not (80.0 <= tstep < 82.0):                             # he stops halfway
-            place(sfx, wood_step(40 + k), tstep, -9 + min(4, (tstep - 76) * 0.25), 0.35)
+            place(sfx, wood_step(40 + k), tstep, -12 + min(3, (tstep - 76) * 0.25), 0.35)
         tstep += 0.95
         k += 1
     place(sfx, creak(0.8, 30, 70, seed=33), 81.0, -18, 0.35)       # the step he is standing on
@@ -760,8 +760,8 @@ def build():
     # ---------- JUST IN TIME
     place(sfx, creak(1.8, 20, 50, res=(220, 480, 900), seed=44), 105.0, -18)
     sir = np.zeros((2, N))
-    place(sir, siren(8.0, yelp_from=2.5), 107.0, -16, 0.4)          # sirens BLAST
-    place(sir, siren(8.0, period=2.9, f_lo=620, f_hi=1290, seed=1), 107.25, -19, -0.4)
+    place(sir, siren(8.0, yelp_from=2.5), 107.0, -18, 0.4)          # sirens BLAST
+    place(sir, siren(8.0, period=2.9, f_lo=620, f_hi=1290, seed=1), 107.25, -21, -0.4)
     # from 109.0 s we are back in the basement: the sirens are outside, muffled through the walls
     i0 = int(109.0 * SR)
     xf = np.clip((np.arange(N - i0)) / (0.08 * SR), 0, 1)
@@ -769,10 +769,10 @@ def build():
         muff = lp(sir[ch, i0:], 700, 4) * db(4)
         sir[ch, i0:] = sir[ch, i0:] * (1 - xf) + muff * xf
     sfx += sir
-    place(sfx, boom(1.5, 90, 30), 107.0, -10)
-    place(sfx, screech(0.9), 107.6, -12, 0.5)
+    place(sfx, boom(1.5, 90, 30), 107.0, -13)
+    place(sfx, screech(0.9), 107.6, -17, 0.5)
     place(sfx, engine(2.0), 107.0, -16, 0.4)
-    place(sfx, slam(True), 109.08, -7)                             # door bursts open
+    place(sfx, slam(True), 109.08, -10)                             # door bursts open
     for k in range(10):
         place(sfx, wood_step(80 + k, 0.7), 110.55 + k * 0.19, -12, 0.2)  # officers rushing down
     place(sfx, thump(0.08, 2000, 0.4, 8000), 113.2, -18)           # handcuffs click

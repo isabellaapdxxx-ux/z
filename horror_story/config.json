@@ -388,37 +388,37 @@
  "captions": [
   {
    "start": 0.0,
-   "end": 1.509,
+   "end": 1.209,
    "text": "My neighbor is a ~KILLER…~"
   },
   {
-   "start": 1.509,
+   "start": 1.209,
    "end": 2.45,
    "text": "and I'm *NEXT.*"
   },
   {
-   "start": 2.62,
-   "end": 3.45,
+   "start": 2.5,
+   "end": 3.48,
    "text": "Here's how it happened…"
   },
   {
    "start": 4.2,
-   "end": 5.58,
+   "end": 5.407,
    "text": "Our street was quiet."
   },
   {
-   "start": 5.58,
+   "start": 5.407,
    "end": 7.5,
    "text": "Nothing ever happened here."
   },
   {
    "start": 7.5,
-   "end": 9.638,
+   "end": 8.433,
    "text": "Then a new neighbor moved"
   },
   {
-   "start": 9.638,
-   "end": 10.9,
+   "start": 8.433,
+   "end": 10.347,
    "text": "in next door."
   },
   {
@@ -433,11 +433,11 @@
   },
   {
    "start": 14.9,
-   "end": 15.753,
+   "end": 15.771,
    "text": "He watched me."
   },
   {
-   "start": 15.753,
+   "start": 15.771,
    "end": 16.9,
    "text": "Every single day."
   },
@@ -473,7 +473,7 @@
   },
   {
    "start": 28.1,
-   "end": 30.2,
+   "end": 30.056,
    "text": "So I snuck over…"
   },
   {
@@ -483,27 +483,27 @@
   },
   {
    "start": 32.1,
-   "end": 34.1,
+   "end": 34.079,
    "text": "…and looked inside."
   },
   {
    "start": 34.1,
-   "end": 36.829,
+   "end": 36.27,
    "text": "He was dragging something…"
   },
   {
    "start": 36.9,
-   "end": 38.914,
+   "end": 38.658,
    "text": "Something *heavy.*"
   },
   {
    "start": 39.0,
-   "end": 42.0,
+   "end": 41.482,
    "text": "*MISSING* posters. All of them."
   },
   {
    "start": 42.0,
-   "end": 44.1,
+   "end": 43.637,
    "text": "And a *shovel.*"
   },
   {
@@ -513,32 +513,32 @@
   },
   {
    "start": 48.2,
-   "end": 50.571,
+   "end": 49.926,
    "text": "Then he stopped."
   },
   {
-   "start": 50.6,
-   "end": 51.92,
+   "start": 50.35,
+   "end": 51.95,
    "text": "\"I *see* you, Timmy.\""
   },
   {
-   "start": 52.0,
+   "start": 52.12,
    "end": 53.25,
-   "text": "*HE SAW ME.*"
+   "text": "*HE* *SAW* *ME.*"
   },
   {
    "start": 53.3,
-   "end": 55.198,
+   "end": 55.111,
    "text": "\"~RUN!~ ~RUN!~\""
   },
   {
    "start": 57.0,
-   "end": 59.1,
+   "end": 58.925,
    "text": "His light went out."
   },
   {
    "start": 59.1,
-   "end": 61.0,
+   "end": 60.914,
    "text": "I made it home…"
   },
   {
@@ -563,7 +563,7 @@
   },
   {
    "start": 67.1,
-   "end": 69.0,
+   "end": 68.896,
    "text": "When I woke up…"
   },
   {
@@ -603,7 +603,7 @@
   },
   {
    "start": 82.0,
-   "end": 84.0,
+   "end": 83.981,
    "text": "Wait… my *PHONE!*"
   },
   {
@@ -622,8 +622,8 @@
    "text": "I had one chance."
   },
   {
-   "start": 90.0,
-   "end": 93.3,
+   "start": 90.25,
+   "end": 92.6,
    "text": "9… 1… 1…"
   },
   {
@@ -653,11 +653,11 @@
   },
   {
    "start": 100.9,
-   "end": 102.147,
+   "end": 102.076,
    "text": "\"Officers are on the way."
   },
   {
-   "start": 102.147,
+   "start": 102.076,
    "end": 103.1,
    "text": "Stay on the line.\""
   },
@@ -857,7 +857,7 @@
    "text": "My neighbor is a ~KILLER~… and I'm *NEXT.*"
   },
   {
-   "start": 2.62,
+   "start": 2.5,
    "speaker": "narr",
    "style": "normal",
    "text": "Here's how it happened…"
@@ -983,10 +983,16 @@
    "text": "Then he stopped."
   },
   {
-   "start": 50.6,
+   "start": 50.35,
    "speaker": "gray",
    "style": "normal",
    "text": "I *see* you, Timmy."
+  },
+  {
+   "start": 52.12,
+   "speaker": "narr",
+   "style": "normal",
+   "text": "*HE SAW ME.*"
   },
   {
    "start": 53.3,
@@ -1101,6 +1107,12 @@
    "speaker": "narr",
    "style": "normal",
    "text": "I had one chance."
+  },
+  {
+   "start": 90.25,
+   "speaker": "narr",
+   "style": "whisper",
+   "text": "9… 1… 1…"
   },
   {
    "start": 93.4,

@@ -96,7 +96,7 @@ SHOTS = [
 VOICE_LINES = [
     # HOOK
     (0.05, 'narr', 'normal', "My neighbor is a ~KILLER~… and I'm *NEXT.*", 2.45),
-    (2.62, 'narr', 'normal', "Here's how it happened…", 3.45),
+    (2.50, 'narr', 'normal', "Here's how it happened…", 3.48),
     # SETUP
     (4.20, 'narr', 'normal', 'Our street was quiet. Nothing ever happened here.'),
     (7.50, 'narr', 'normal', 'Then a new neighbor moved in next door.'),
@@ -120,7 +120,8 @@ VOICE_LINES = [
     (44.10, 'timmy', 'whisper', 'No… no way…', 45.9),
     # SPOTTED
     (48.20, 'narr', 'normal', 'Then he stopped.'),
-    (50.60, 'gray', 'normal', 'I *see* you, Timmy.', 51.92),
+    (50.35, 'gray', 'normal', 'I *see* you, Timmy.', 51.95),
+    (52.12, 'narr', 'normal', '*HE SAW ME.*', 53.25),
     (53.30, 'timmy', 'shout', '~RUN!~ ~RUN!~', 55.5),
     (57.00, 'narr', 'normal', 'His light went out.'),
     (59.10, 'narr', 'normal', 'I made it home…'),
@@ -141,6 +142,7 @@ VOICE_LINES = [
     (84.00, 'narr', 'normal', 'Still in my pocket.'),
     (86.00, 'gray', 'normal', "Don't be scared, Timmy."),
     (88.00, 'narr', 'normal', 'I had one chance.', 89.9),
+    (90.25, 'narr', 'whisper', '9… 1… 1…', 93.3),
     # THE CALL
     (93.40, 'op', 'phone', "911, what's your emergency?"),
     (94.90, 'timmy', 'whisper', 'Please *HELP* me…'),
@@ -162,11 +164,8 @@ VOICE_LINES = [
 ]
 DIALOGUE_SPEAKERS = ('timmy', 'gray', 'op', 'cop', 'cop2')
 
-# Captions that have no voice (the sting and the dialing)
-SILENT_CAPTIONS = [
-    (52.00, 53.25, '*HE SAW ME.*'),
-    (90.00, 93.30, '9… 1… 1…'),
-]
+# Captions that have no voice (none: every caption is spoken)
+SILENT_CAPTIONS = []
 
 MAX_CAPTION_WORDS = 5
 
@@ -232,8 +231,13 @@ def make_captions(timings):
         total = sum(len(''.join(c)) for c in chunks)
         t = ln['start'] if ln['start'] > 0.1 else 0.0
         quote = ln['speaker'] in DIALOGUE_SPEAKERS
+        ct = ln.get('chunk_times')
+        if ct and len(ct) == len(chunks) + 1:  # measured from the voice (snapped to pauses)
+            shares = [ct[j + 1] - ct[j] for j in range(len(chunks))]
+        else:
+            shares = [dur * len(''.join(c)) / total for c in chunks]
         for i, c in enumerate(chunks):
-            share = dur * len(''.join(c)) / total
+            share = shares[i]
             text = ' '.join(c)
             if quote and i == 0:
                 text = '"' + text

@@ -1,4 +1,5 @@
-"""Character voices: procedural "blocky game" speech (Simlish-style babble) generated from each line's syllables.
+"""Character voices. Default: Kokoro neural TTS (every caption is spoken: Timmy narrates, everyone else talks).
+Fallback (--synth or no model): procedural "blocky game" speech (Simlish-style babble) from each line's syllables.
 
 Every dialogue line in config.VOICE_LINES is turned into syllables (onset consonant + vowel), and each syllable is
 synthesized with a glottal pulse source through vowel formant filters, with per-character pitch, formant scale,
@@ -183,10 +184,193 @@ def room(y, amount=0.25, decay=0.35, seed=4):
 
 
 BASEMENT = [(65.0, 107.0), (109.0, 115.0)]
-LEVEL = {'normal': -8.0, 'whisper': -11.0, 'shout': -7.5, 'phone': -10.5}
+LEVEL = {'normal': -8.0, 'whisper': -10.5, 'shout': -9.5, 'phone': -10.0}
+NARR_LEVEL = -8.5
+
+# ============================================================ Kokoro (neural TTS) voices
+# Kokoro-82M (Apache-2.0) via kokoro-onnx. Model files go in build/kokoro/ (kokoro-v1.0.onnx, voices-v1.0.bin),
+# from the thewh1teagle/kokoro-onnx GitHub release "model-files-v1.0".
+# voice, pitch shift (semitones; also scales the formants, so +st = smaller/younger), pace
+CAST = {
+    'narr': ('af_heart', 2.5, 1.0),     # Timmy telling the story
+    'timmy': ('af_heart', 2.5, 1.0),
+    'gray': ('bm_george', -3.0, 0.86),  # slow, low, polite: creepy
+    'op': ('af_sarah', 0.0, 1.08),
+    'cop': ('am_michael', 0.0, 1.08),
+    'cop2': ('am_fenrir', 0.0, 1.0),
+}
+KOKORO_DIR = os.environ.get('KOKORO_DIR', os.path.join(BUILD, 'kokoro'))
+_kok = None
 
 
-def main():
+def kokoro():
+    global _kok
+    if _kok is None:
+        from kokoro_onnx import Kokoro
+        _kok = Kokoro(os.path.join(KOKORO_DIR, 'kokoro-v1.0.onnx'), os.path.join(KOKORO_DIR, 'voices-v1.0.bin'))
+    return _kok
+
+
+NUMBERS = {'9… 1… 1…': 'Nine... one... one...', '911': 'nine one one', '42': 'forty two'}
+
+
+def tts_text(text):
+    t = re.sub(r'[*~"]', '', text)
+    t = re.sub(r'[\U0001F300-\U0001FAFF]', '', t).strip()
+    for k, v in NUMBERS.items():
+        t = t.replace(k, v)
+    t = t.replace('…', '...')
+    # ALL-CAPS words are read as words, not spelled out
+    t = re.sub(r"\b([A-Z]{2,}[A-Z']*)\b", lambda m: m.group(1).capitalize() if m.group(1) != 'I' else 'I', t)
+    return t
+
+
+def pitch_shift_to_48k(y, semitones):
+    """Resample 24 kHz audio to 48 kHz while shifting pitch (and formants) by `semitones` (duration scales too)."""
+    from fractions import Fraction
+    from scipy.signal import resample_poly
+    r = 2 ** (semitones / 12.0)
+    fr = Fraction(2 / r).limit_denominator(200)
+    return resample_poly(y, fr.numerator, fr.denominator)
+
+
+def whisperize(y, order=20):
+    """LPC whisper: keep the vocal-tract filter of each 25 ms frame, replace the voiced source with noise."""
+    from scipy.linalg import solve_toeplitz
+    from scipy.signal import lfilter
+    n = int(0.025 * SR)
+    hop = n // 2
+    win = np.hanning(n)
+    out = np.zeros(len(y) + n)
+    r = np.random.default_rng(3)
+    for i in range(0, len(y) - n, hop):
+        fr = y[i:i + n] * win
+        ac = np.correlate(fr, fr, 'full')[n - 1:n + order]
+        if ac[0] < 1e-8:
+            continue
+        ac[0] *= 1.0001
+        a = solve_toeplitz(ac[:order], ac[1:order + 1])
+        err = max(ac[0] - np.dot(a, ac[1:order + 1]), 1e-12)
+        ex = r.standard_normal(n) * math.sqrt(err / n)
+        out[i:i + n] += lfilter([1.0], np.concatenate([[1.0], -a]), ex) * win
+    out = out[:len(y)]
+    out = hp(out, 300)
+    out = out / (np.max(np.abs(out)) + 1e-9)
+    # keep a little of the original, muffled, so the words stay clear
+    return out * 0.85 + lp(y / (np.max(np.abs(y)) + 1e-9), 1200) * 0.25
+
+
+def kokoro_line(text, spk, style, pace):
+    voice, st, base_pace = CAST[spk]
+    if style == 'shout':
+        st += 1.0
+    r = 2 ** (st / 12.0)
+    speed = float(np.clip(pace * base_pace / r, 0.6, 1.9))
+    y, sr = kokoro().create(tts_text(text), voice=voice, speed=speed, lang='en-us')
+    assert sr == 24000
+    y = pitch_shift_to_48k(np.asarray(y, np.float64), st)
+    # trim leading/trailing silence
+    e = np.abs(y) > 0.01 * np.max(np.abs(y))
+    i0 = max(0, np.argmax(e) - int(0.01 * SR))
+    i1 = min(len(y), len(y) - np.argmax(e[::-1]) + int(0.04 * SR))
+    y = y[i0:i1]
+    if style == 'whisper':
+        y = whisperize(y)
+    elif style == 'shout':
+        y = np.tanh(y / (np.max(np.abs(y)) + 1e-9) * 1.8)
+        y = y + 0.4 * bp(y, 2000, 4500)
+    elif style == 'phone':
+        y = bp(y, 320, 3300, 4)
+        y = np.tanh(y / (np.max(np.abs(y)) + 1e-9) * 1.5)
+    if spk == 'gray':
+        y = y + 0.25 * lp(y, 250)  # a bit more chest
+    return y / (np.max(np.abs(y)) + 1e-9)
+
+
+def frame_rms(y):
+    hop = SR // FPS
+    n = len(y) // hop
+    return np.sqrt(np.mean(y[:n * hop].reshape(n, hop) ** 2, axis=1) + 1e-12)
+
+
+def chunk_times(y, text, start):
+    """Caption chunk boundaries: proportional to characters, then snapped to the quietest 50 ms nearby."""
+    from config import _words_with_markup, _chunks
+    chunks = _chunks(_words_with_markup(text))
+    dur = len(y) / SR
+    total = sum(len(''.join(c)) for c in chunks)
+    win = int(0.05 * SR)
+    pw = np.convolve(y ** 2, np.ones(win) / win, mode='same')
+    times = [start]
+    acc = 0.0
+    for c in chunks[:-1]:
+        acc += dur * len(''.join(c)) / total
+        a, b = int(max(0.05, acc - 0.35) * SR), int(min(dur - 0.05, acc + 0.35) * SR)
+        t = (a + np.argmin(pw[a:b])) / SR if b > a else acc
+        times.append(round(start + t, 3))
+    times.append(round(start + dur, 3))
+    return times
+
+
+def main_kokoro():
+    os.makedirs(BUILD, exist_ok=True)
+    track = np.zeros(N)
+    env = {s: np.zeros(NFRAMES, bool) for s in DIALOGUE_SPEAKERS}
+    timings = []
+    for i, ln in enumerate(VOICE_LINES):
+        start, spk, style, text = ln[:4]
+        until = ln[4] if len(ln) > 4 else None
+        nxt = VOICE_LINES[i + 1][0] if i + 1 < len(VOICE_LINES) else DURATION
+        limit = (until or nxt - 0.06) - start
+        pace = 1.0
+        y = kokoro_line(text, spk, style, pace)
+        for _ in range(4):  # speak faster until the line fits its slot
+            dur = len(y) / SR
+            if dur <= limit:
+                break
+            pace *= dur / limit * 1.03
+            y = kokoro_line(text, spk, style, pace)
+        dur = len(y) / SR
+        if dur > limit:  # last resort: squeeze slightly (tiny pitch change)
+            k = limit / dur
+            y = np.interp(np.arange(int(len(y) * k)) / k, np.arange(len(y)), y)
+            dur = len(y) / SR
+        in_base = any(a <= start < b for a, b in BASEMENT)
+        if spk != 'narr' and style != 'phone':
+            y = room(y, 0.22 if in_base else 0.08, 0.45 if in_base else 0.2, seed=i)[:len(y) + int(0.3 * SR)]
+        lvl = NARR_LEVEL + (LEVEL[style] - LEVEL['normal']) if spk == 'narr' else LEVEL[style]
+        y = y / (np.max(np.abs(y)) + 1e-9) * 10 ** (lvl / 20)
+        s0 = int(start * SR)
+        n = min(len(y), N - s0)
+        track[s0:s0 + n] += y[:n]
+        if spk in env:  # lip sync from the real voice: mouth open when the frame is loud
+            rms = frame_rms(y[:int(dur * SR)])
+            thr = 0.28 * np.percentile(rms, 95)
+            f0 = int(round(start * FPS))
+            for k, v in enumerate(rms):
+                if v > thr and 0 <= f0 + k < NFRAMES:
+                    env[spk][f0 + k] = True
+        timings.append(dict(start=start, end=round(start + dur, 3), speaker=spk, style=style, text=text, until=until,
+                            chunk_times=chunk_times(y[:int(dur * SR)], text, start), pace=round(pace, 2)))
+        print(f'{start:7.2f}-{start + dur:7.2f} (slot {limit:4.2f}s, pace {pace:4.2f})  {spk:5s} {style:7s} '
+              f'{tts_text(text)}')
+    for s in env:  # flap: close the mouth briefly inside long open runs
+        e = env[s]
+        for f in range(1, NFRAMES - 1):
+            if e[f - 1] and e[f] and e[f + 1] and f % 4 == 0:
+                e[f] = False
+    st = np.stack([track, track], axis=1)
+    wavfile.write(os.path.join(BUILD, 'voice.wav'), SR, (np.clip(st, -1, 1) * 32767).astype(np.int16))
+    with open(os.path.join(BUILD, 'voice_lines.json'), 'w') as f:
+        json.dump(timings, f, indent=1, ensure_ascii=False)
+    with open(os.path.join(BUILD, 'voice_env.json'), 'w') as f:
+        json.dump({s: np.flatnonzero(e).tolist() for s, e in env.items()}, f)
+    print('voice ->', os.path.join(BUILD, 'voice.wav'))
+
+
+# ============================================================ procedural fallback (no TTS model)
+
+def main_synth():
     os.makedirs(BUILD, exist_ok=True)
     track = np.zeros(N)
     env = {s: np.zeros(NFRAMES, bool) for s in DIALOGUE_SPEAKERS}
@@ -238,4 +422,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    if '--synth' in sys.argv or not os.path.exists(os.path.join(KOKORO_DIR, 'kokoro-v1.0.onnx')):
+        main_synth()
+    else:
+        main_kokoro()
