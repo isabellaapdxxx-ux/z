@@ -16,8 +16,8 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 **Voice / captions**
 
 - `0:00.00–0:01.45` Boy (narration): My cousin heard me call **911**...
-- `0:01.55–0:02.90` Boy (narration): ...and now I'm in his **BASEMENT**.
-- `0:03.00–0:04.37` Cousin: You shouldn't have looked in that room.
+- `0:01.55–0:02.69` Boy (narration): ...and now I'm in his **BASEMENT**.
+- `0:03.00–0:04.61` Cousin: You shouldn't have looked in that room.
 - `0:04.80–0:06.05` Title card: **3 HOURS EARLIER...**
 
 **Sound:** Frame 1: bass hit + "call dropped" beeps, then silence with heartbeat and slow footsteps; whoosh + light hit on the face zoom; tape-rewind + glitch into the flashback.
@@ -35,14 +35,14 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 
 **Voice / captions**
 
-- `0:06.25–0:09.48` Boy (narration): Three hours earlier, I was visiting my older cousin Derek.
-- `0:10.10–0:11.88` Boy (narration): He was always super nice to me.
-- `0:12.40–0:14.44` Cousin (friendly): Hey buddy! Make yourself at home.
-- `0:15.30–0:18.94` Boy (narration): We played games, ate pizza... everything felt normal.
-- `0:19.40–0:20.62` Boy (narration): Except for one thing.
-- `0:21.00–0:23.75` Boy (narration): The door at the end of the hall... was always **LOCKED**.
-- `0:25.10–0:25.82` Boy: What's in there?
-- `0:26.60–0:28.42` Cousin: Nothing. Don't ever go in there.
+- `0:06.25–0:09.22` Boy (narration): Three hours earlier, I was visiting my older cousin Derek.
+- `0:10.10–0:11.53` Boy (narration): He was always super nice to me.
+- `0:12.40–0:14.37` Cousin (friendly): Hey buddy! Make yourself at home.
+- `0:15.30–0:18.09` Boy (narration): We played games, ate pizza... everything felt normal.
+- `0:19.40–0:20.43` Boy (narration): Except for one thing.
+- `0:21.00–0:23.46` Boy (narration): The door at the end of the hall... was always **LOCKED**.
+- `0:25.10–0:25.92` Boy: What's in there?
+- `0:26.60–0:28.76` Cousin: Nothing. Don't ever go in there.
 
 **Sound:** Birds, footsteps, door creak. Theme: eerie music-box loop with a light beat, thins out in the hallway. Bass hits on "LOCKED" and when the smile drops.
 
@@ -61,14 +61,14 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 
 **Voice / captions**
 
-- `0:30.20–0:33.69` Boy (narration): That night, he went out for snacks... and left his keys.
-- `0:34.40–0:36.10` Boy (narration): I know. I shouldn't have.
-- `0:38.00–0:40.12` Boy (narration): The walls were covered in **MISSING** posters.
-- `0:41.30–0:44.00` Boy (narration): Newspaper clippings. Kids who never came home.
-- `0:44.90–0:47.21` Boy (narration): And on the desk... a list of names.
-- `0:47.70–0:48.99` Boy (narration): My name was at the **BOTTOM**.
-- `0:50.00–0:51.81` Boy (whisper): My cousin is a... **KILLER**?
-- `0:52.70–0:54.04` Boy (narration): Then I heard the front door.
+- `0:30.20–0:33.02` Boy (narration): That night, he went out for snacks... and left his keys.
+- `0:34.40–0:36.05` Boy (narration): I know. I shouldn't have.
+- `0:38.00–0:39.89` Boy (narration): The walls were covered in **MISSING** posters.
+- `0:41.30–0:43.85` Boy (narration): Newspaper clippings. Kids who never came home.
+- `0:44.90–0:46.98` Boy (narration): And on the desk... a list of names.
+- `0:47.70–0:48.88` Boy (narration): My name was at the **BOTTOM**.
+- `0:50.00–0:51.88` Boy (whisper): My cousin is a... **KILLER**?
+- `0:52.70–0:53.83` Boy (narration): Then I heard the front door.
 
 **Sound:** Car driving away, keys jingle, footsteps, unlock click, long door creak. Music turns dark (low drone, detuned music box). Bass hits on "MISSING", the name reveal and "KILLER"; gasp; front door slam.
 
@@ -85,11 +85,11 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 
 **Voice / captions**
 
-- `0:55.30–0:57.67` Boy (narration): I hid in the closet and called **911**.
-- `1:01.20–1:03.19` 911 operator: **911**, what is your emergency?
-- `1:03.80–1:07.09` Boy (whisper): Please help... my cousin is a **KILLER**. I'm at his house.
-- `1:08.70–1:10.11` Boy (narration): Then... footsteps.
-- `1:11.45–1:12.03` Cousin: Found you.
+- `0:55.30–0:57.57` Boy (narration): I hid in the closet and called **911**.
+- `1:01.20–1:03.31` 911 operator: **911**, what is your emergency?
+- `1:03.80–1:07.12` Boy (whisper): Please help... my cousin is a **KILLER**. I'm at his house.
+- `1:08.70–1:10.18` Boy (narration): Then... footsteps.
+- `1:11.45–1:12.27` Cousin: Found you.
 
 **Sound:** Rustle, DTMF 9-1-1 dialing, ring-back, connect click, operator on a phone filter, whisper, footsteps getting louder, closet creak, bass hit on "Found you", call-dropped beeps and hard cut to black with heartbeat. Pulsing tension ostinato.
 
@@ -110,14 +110,14 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 
 **Voice / captions**
 
-- `1:15.60–1:17.61` Boy (narration): When I woke up, I was in his **BASEMENT**.
-- `1:18.70–1:20.13` Cousin: You shouldn't have looked in that room.
-- `1:23.50–1:24.51` Cousin: **NOBODY'S** **COMING**.
-- `1:26.10–1:28.35` Boy (narration): The call dropped before I could say where I was.
-- `1:30.60–1:32.45` Boy (narration): He went upstairs to get the car ready.
-- `1:33.60–1:35.19` Boy (narration): Every second felt like an hour.
-- `1:36.60–1:38.17` Boy: Somebody... please...
-- `1:41.20–1:42.12` Cousin: It's time to go.
+- `1:15.60–1:17.38` Boy (narration): When I woke up, I was in his **BASEMENT**.
+- `1:18.70–1:20.31` Cousin: You shouldn't have looked in that room.
+- `1:23.50–1:24.57` Cousin: **NOBODY'S** **COMING**.
+- `1:26.10–1:28.32` Boy (narration): The call dropped before I could say where I was.
+- `1:30.60–1:32.32` Boy (narration): He went upstairs to get the car ready.
+- `1:33.60–1:35.06` Boy (narration): Every second felt like an hour.
+- `1:36.60–1:38.24` Boy: Somebody... please...
+- `1:41.20–1:42.26` Cousin: It's time to go.
 
 **Sound:** Gasp on waking, footsteps, phone smash (crack + glass), bass hits, ticking clock and heartbeat throughout, footsteps up the stairs, door shut, struggling chair creaks, door creak, footsteps down, gasp. Theme returns with taiko drums and tremolo strings and keeps intensifying, then a riser.
 
@@ -132,9 +132,9 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 
 **Voice / captions**
 
-- `1:45.90–1:47.71` Police officer: **POLICE**! Hands where we can see them!
-- `1:49.60–1:52.30` Boy (narration): The call went through. They traced my location.
-- `1:53.00–1:54.06` Police officer: You're safe now, kid.
+- `1:45.90–1:48.10` Police officer: **POLICE**! Hands where we can see them!
+- `1:49.60–1:51.94` Boy (narration): The call went through. They traced my location.
+- `1:53.00–1:54.14` Police officer: You're safe now, kid.
 
 **Sound:** Sirens, door bash, running footsteps, handcuffs ratchet click. Theme flips to a heroic A-major brass + march snare version.
 
@@ -147,8 +147,8 @@ The corner text **"wait for the ending 👀"** stays on screen for the whole vid
 
 **Voice / captions**
 
-- `1:55.10–1:55.73` Boy (narration): I was safe...
-- `1:56.40–1:57.63` Boy (narration): ...but he said he'd be **BACK**.
+- `1:55.10–1:55.85` Boy (narration): I was safe...
+- `1:56.40–1:57.50` Boy (narration): ...but he said he'd be **BACK**.
 - `1:58.15–1:59.35` Title card: **Part 2?**
 
 **Sound:** Distant siren, music box theme back in minor, sting + bass hit on "Part 2?", glitch + riser that lands on the frame-1 bass hit when the video loops.

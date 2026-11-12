@@ -124,6 +124,30 @@ def worker(idx, f0, f1, out):
     p.wait()
 
 
+def limit_audio(src, dst, gain_db=-1.6, ceiling=0.6, look_ms=3.0, release_ms=80.0):
+    """Lookahead peak limiter (numpy) so the AAC encode keeps true peaks below about -1 dBTP."""
+    from scipy.io import wavfile
+    from scipy.ndimage import maximum_filter1d
+    from scipy.signal import lfilter
+    sr, x = wavfile.read(src)
+    x = x.astype(np.float64) / 32768 * 10 ** (gain_db / 20)
+    peak = np.abs(x).max(1)
+    la = int(sr * look_ms / 1000)
+    need = np.minimum(1.0, ceiling / np.maximum(peak, 1e-9))
+    g = -maximum_filter1d(-need, size=2 * la + 1)          # min over the lookahead window
+    a = math.exp(-1.0 / (sr * release_ms / 1000))
+    # smooth recovery (release), never above the required gain
+    g_s = np.minimum(g, lfilter([1 - a], [1, -a], g, zi=[g[0] * a])[0])
+    # short attack ramp ahead of each peak (min-filter, then moving average over the lookahead)
+    g_s = -maximum_filter1d(-g_s, size=la + 1)
+    g_s = np.convolve(g_s, np.ones(la) / la, mode='same')
+    y = x * g_s[:, None]
+    y = np.clip(y, -ceiling, ceiling)
+    fade = int(sr * 0.003)
+    y[:fade] *= np.linspace(0, 1, fade)[:, None]
+    wavfile.write(dst, sr, (y * 32767).astype(np.int16))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('mode', choices=['frames', 'video', 'mux'])
@@ -173,12 +197,13 @@ def main():
         print('wrote build/video_noaudio.mp4')
     elif a.mode == 'mux':
         out = os.path.join(ROOT, 'final_video.mp4')
+        apath = os.path.join(BUILD, 'audio_final.wav')
+        limit_audio(os.path.join(BUILD, 'audio.wav'), apath)
         cmd = ['ffmpeg', '-v', 'error', '-y', '-i', os.path.join(BUILD, 'video_noaudio.mp4'), '-i',
-               os.path.join(BUILD, 'audio.wav'),
+               apath,
                '-map', '0:v:0', '-map', '1:a:0',
                '-c:v', 'libx264', '-preset', 'slow', '-crf', '21', '-maxrate', '5M', '-bufsize', '10M',
                '-profile:v', 'high', '-level', '4.1', '-pix_fmt', 'yuv420p', '-r', str(FPS), '-g', '60',
-               '-af', 'volume=-1.9dB,alimiter=limit=0.82:attack=2:release=60:level=false',
                '-c:a', 'aac', '-b:a', '192k', '-ar', '48000',
                '-t', f'{DURATION:.3f}', '-movflags', '+faststart', out]
         subprocess.run(cmd, check=True)
