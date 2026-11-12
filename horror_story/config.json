@@ -1,0 +1,774 @@
+{
+ "fps": 30,
+ "duration": 120.0,
+ "size": [
+  1080,
+  1920
+ ],
+ "shots": [
+  {
+   "start": 0.0,
+   "end": 1.5,
+   "shot": "hook_basement",
+   "params": {}
+  },
+  {
+   "start": 1.5,
+   "end": 2.5,
+   "shot": "hook_zoom_face",
+   "params": {}
+  },
+  {
+   "start": 2.5,
+   "end": 3.5,
+   "shot": "hook_black",
+   "params": {}
+  },
+  {
+   "start": 3.5,
+   "end": 4.0,
+   "shot": "hook_rewind",
+   "params": {}
+  },
+  {
+   "start": 4.0,
+   "end": 5.8,
+   "shot": "street_pan",
+   "params": {}
+  },
+  {
+   "start": 5.8,
+   "end": 7.5,
+   "shot": "yard_play",
+   "params": {}
+  },
+  {
+   "start": 7.5,
+   "end": 9.3,
+   "shot": "gray_house_push",
+   "params": {}
+  },
+  {
+   "start": 9.3,
+   "end": 11.0,
+   "shot": "gray_tilt_up",
+   "params": {}
+  },
+  {
+   "start": 11.0,
+   "end": 13.0,
+   "shot": "gray_face_close",
+   "params": {
+    "expr": "blank"
+   }
+  },
+  {
+   "start": 13.0,
+   "end": 14.8,
+   "shot": "timmy_turns",
+   "params": {}
+  },
+  {
+   "start": 14.8,
+   "end": 16.5,
+   "shot": "fence_wide",
+   "params": {}
+  },
+  {
+   "start": 16.5,
+   "end": 18.5,
+   "shot": "gray_eyes",
+   "params": {}
+  },
+  {
+   "start": 18.5,
+   "end": 20.3,
+   "shot": "timmy_waves",
+   "params": {}
+  },
+  {
+   "start": 20.3,
+   "end": 22.0,
+   "shot": "gray_watches_leave",
+   "params": {}
+  },
+  {
+   "start": 22.0,
+   "end": 24.0,
+   "shot": "night_street",
+   "params": {}
+  },
+  {
+   "start": 24.0,
+   "end": 26.0,
+   "shot": "bedroom_window",
+   "params": {}
+  },
+  {
+   "start": 26.0,
+   "end": 28.0,
+   "shot": "pov_basement_light",
+   "params": {}
+  },
+  {
+   "start": 28.0,
+   "end": 30.0,
+   "shot": "porch_sneak",
+   "params": {}
+  },
+  {
+   "start": 30.0,
+   "end": 32.0,
+   "shot": "lawn_creep",
+   "params": {}
+  },
+  {
+   "start": 32.0,
+   "end": 34.0,
+   "shot": "kneel_window",
+   "params": {}
+  },
+  {
+   "start": 34.0,
+   "end": 37.0,
+   "shot": "window_drag",
+   "params": {}
+  },
+  {
+   "start": 37.0,
+   "end": 39.0,
+   "shot": "window_bag_close",
+   "params": {}
+  },
+  {
+   "start": 39.0,
+   "end": 42.0,
+   "shot": "window_posters",
+   "params": {}
+  },
+  {
+   "start": 42.0,
+   "end": 44.0,
+   "shot": "window_shovel",
+   "params": {}
+  },
+  {
+   "start": 44.0,
+   "end": 46.0,
+   "shot": "timmy_face_green",
+   "params": {}
+  },
+  {
+   "start": 46.0,
+   "end": 48.0,
+   "shot": "window_gray_still",
+   "params": {}
+  },
+  {
+   "start": 48.0,
+   "end": 51.0,
+   "shot": "window_head_turn",
+   "params": {}
+  },
+  {
+   "start": 51.0,
+   "end": 52.0,
+   "shot": "window_stare",
+   "params": {}
+  },
+  {
+   "start": 52.0,
+   "end": 53.0,
+   "shot": "jumpscare_window",
+   "params": {}
+  },
+  {
+   "start": 53.0,
+   "end": 55.0,
+   "shot": "timmy_falls_back",
+   "params": {}
+  },
+  {
+   "start": 55.0,
+   "end": 57.0,
+   "shot": "run_lawn",
+   "params": {}
+  },
+  {
+   "start": 57.0,
+   "end": 59.0,
+   "shot": "look_back_light_off",
+   "params": {}
+  },
+  {
+   "start": 59.0,
+   "end": 61.0,
+   "shot": "door_slam",
+   "params": {}
+  },
+  {
+   "start": 61.0,
+   "end": 63.0,
+   "shot": "hall_panting",
+   "params": {}
+  },
+  {
+   "start": 63.0,
+   "end": 65.0,
+   "shot": "hall_shadow_behind",
+   "params": {}
+  },
+  {
+   "start": 65.0,
+   "end": 65.6,
+   "shot": "grabbed",
+   "params": {}
+  },
+  {
+   "start": 65.6,
+   "end": 67.0,
+   "shot": "blackout",
+   "params": {}
+  },
+  {
+   "start": 67.0,
+   "end": 69.0,
+   "shot": "wake_blur",
+   "params": {}
+  },
+  {
+   "start": 69.0,
+   "end": 72.0,
+   "shot": "tied_matching_hook",
+   "params": {}
+  },
+  {
+   "start": 72.0,
+   "end": 74.0,
+   "shot": "tied_struggle_close",
+   "params": {}
+  },
+  {
+   "start": 74.0,
+   "end": 76.0,
+   "shot": "stairs_door_opens",
+   "params": {}
+  },
+  {
+   "start": 76.0,
+   "end": 78.0,
+   "shot": "stairs_feet",
+   "params": {}
+  },
+  {
+   "start": 78.0,
+   "end": 80.0,
+   "shot": "timmy_looks_stairs",
+   "params": {}
+  },
+  {
+   "start": 80.0,
+   "end": 82.0,
+   "shot": "gray_halfway",
+   "params": {}
+  },
+  {
+   "start": 82.0,
+   "end": 84.0,
+   "shot": "pocket_glow",
+   "params": {}
+  },
+  {
+   "start": 84.0,
+   "end": 86.0,
+   "shot": "phone_out",
+   "params": {}
+  },
+  {
+   "start": 86.0,
+   "end": 88.0,
+   "shot": "phone_lap_close",
+   "params": {}
+  },
+  {
+   "start": 88.0,
+   "end": 90.0,
+   "shot": "stairs_wide_descend",
+   "params": {}
+  },
+  {
+   "start": 90.0,
+   "end": 92.0,
+   "shot": "phone_dial",
+   "params": {}
+  },
+  {
+   "start": 92.0,
+   "end": 94.0,
+   "shot": "phone_ringing",
+   "params": {}
+  },
+  {
+   "start": 94.0,
+   "end": 97.0,
+   "shot": "whisper_close",
+   "params": {
+    "line": 0
+   }
+  },
+  {
+   "start": 97.0,
+   "end": 99.0,
+   "shot": "phone_connected",
+   "params": {}
+  },
+  {
+   "start": 99.0,
+   "end": 101.0,
+   "shot": "whisper_close",
+   "params": {
+    "line": 1
+   }
+  },
+  {
+   "start": 101.0,
+   "end": 103.0,
+   "shot": "gray_floor_behind",
+   "params": {}
+  },
+  {
+   "start": 103.0,
+   "end": 105.0,
+   "shot": "shadow_over_timmy",
+   "params": {}
+  },
+  {
+   "start": 105.0,
+   "end": 107.0,
+   "shot": "gray_reaches",
+   "params": {}
+  },
+  {
+   "start": 107.0,
+   "end": 109.0,
+   "shot": "police_arrive",
+   "params": {}
+  },
+  {
+   "start": 109.0,
+   "end": 110.5,
+   "shot": "door_burst",
+   "params": {}
+  },
+  {
+   "start": 110.5,
+   "end": 112.5,
+   "shot": "police_rush",
+   "params": {}
+  },
+  {
+   "start": 112.5,
+   "end": 115.0,
+   "shot": "arrest",
+   "params": {}
+  },
+  {
+   "start": 115.0,
+   "end": 117.5,
+   "shot": "blanket_safe",
+   "params": {}
+  },
+  {
+   "start": 117.5,
+   "end": 120.0,
+   "shot": "final_flicker",
+   "params": {}
+  }
+ ],
+ "captions": [
+  {
+   "start": 0.0,
+   "end": 1.0,
+   "text": "My neighbor is a ~KILLER~…"
+  },
+  {
+   "start": 1.0,
+   "end": 2.5,
+   "text": "…and I'm *NEXT.*"
+  },
+  {
+   "start": 2.62,
+   "end": 3.5,
+   "text": "Here's how it happened…"
+  },
+  {
+   "start": 4.2,
+   "end": 7.4,
+   "text": "Quiet street. Nothing ever happened."
+  },
+  {
+   "start": 7.5,
+   "end": 10.9,
+   "text": "Then *HE* moved in next door."
+  },
+  {
+   "start": 11.0,
+   "end": 13.0,
+   "text": "Mr. Gray."
+  },
+  {
+   "start": 13.1,
+   "end": 16.4,
+   "text": "He watched me. Every. Single. Day."
+  },
+  {
+   "start": 16.5,
+   "end": 19.4,
+   "text": "The new neighbor *never* blinked."
+  },
+  {
+   "start": 19.5,
+   "end": 21.9,
+   "text": "Not. Once."
+  },
+  {
+   "start": 22.1,
+   "end": 25.9,
+   "text": "That night I couldn't sleep."
+  },
+  {
+   "start": 26.0,
+   "end": 27.9,
+   "text": "A light. In his *basement.*"
+  },
+  {
+   "start": 28.0,
+   "end": 31.9,
+   "text": "So I snuck over…"
+  },
+  {
+   "start": 32.0,
+   "end": 33.9,
+   "text": "and looked inside."
+  },
+  {
+   "start": 34.1,
+   "end": 36.9,
+   "text": "He was dragging something…"
+  },
+  {
+   "start": 37.0,
+   "end": 38.9,
+   "text": "Something *heavy.*"
+  },
+  {
+   "start": 39.0,
+   "end": 41.9,
+   "text": "*MISSING.* All of them."
+  },
+  {
+   "start": 42.0,
+   "end": 43.9,
+   "text": "And a *shovel.*"
+  },
+  {
+   "start": 44.0,
+   "end": 45.9,
+   "text": "My heart stopped."
+  },
+  {
+   "start": 48.2,
+   "end": 51.9,
+   "text": "Then he stopped too."
+  },
+  {
+   "start": 52.0,
+   "end": 53.2,
+   "text": "*HE SAW ME.*"
+  },
+  {
+   "start": 53.25,
+   "end": 56.9,
+   "text": "~RUN.~"
+  },
+  {
+   "start": 57.0,
+   "end": 58.9,
+   "text": "His light went out."
+  },
+  {
+   "start": 59.1,
+   "end": 60.9,
+   "text": "I made it home…"
+  },
+  {
+   "start": 61.0,
+   "end": 62.9,
+   "text": "I was safe. Right?"
+  },
+  {
+   "start": 63.2,
+   "end": 64.9,
+   "text": "*Wrong.*"
+  },
+  {
+   "start": 65.7,
+   "end": 66.9,
+   "text": "Everything went black."
+  },
+  {
+   "start": 67.1,
+   "end": 68.9,
+   "text": "When I woke up…"
+  },
+  {
+   "start": 69.0,
+   "end": 71.9,
+   "text": "I was tied to a chair."
+  },
+  {
+   "start": 72.0,
+   "end": 73.9,
+   "text": "In *HIS* basement."
+  },
+  {
+   "start": 74.1,
+   "end": 77.9,
+   "text": "Then… *footsteps.*"
+  },
+  {
+   "start": 78.0,
+   "end": 81.9,
+   "text": "Slow. Heavy. Coming closer."
+  },
+  {
+   "start": 82.0,
+   "end": 83.9,
+   "text": "Wait… my *PHONE!*"
+  },
+  {
+   "start": 84.0,
+   "end": 87.9,
+   "text": "Still in my pocket."
+  },
+  {
+   "start": 88.0,
+   "end": 89.9,
+   "text": "I had one chance."
+  },
+  {
+   "start": 90.0,
+   "end": 93.9,
+   "text": "9… 1… 1…"
+  },
+  {
+   "start": 94.0,
+   "end": 96.9,
+   "text": "\"Please *HELP…*"
+  },
+  {
+   "start": 97.0,
+   "end": 98.9,
+   "text": "…my neighbor…"
+  },
+  {
+   "start": 99.0,
+   "end": 100.9,
+   "text": "*42 Elm Street.*\""
+  },
+  {
+   "start": 101.0,
+   "end": 102.9,
+   "text": "He was right behind me."
+  },
+  {
+   "start": 105.0,
+   "end": 106.9,
+   "text": "He reached for me…"
+  },
+  {
+   "start": 107.0,
+   "end": 108.9,
+   "text": "Then… *SIRENS!*"
+  },
+  {
+   "start": 109.0,
+   "end": 110.4,
+   "text": "\"*POLICE!* FREEZE!\""
+  },
+  {
+   "start": 110.5,
+   "end": 112.4,
+   "text": "They got here *just in time.*"
+  },
+  {
+   "start": 112.5,
+   "end": 114.9,
+   "text": "Mr. Gray was *arrested.*"
+  },
+  {
+   "start": 115.1,
+   "end": 120.0,
+   "text": "Always trust your gut. 👀"
+  }
+ ],
+ "teaser": "Wait for the ending 😳",
+ "theme": {
+  "bpm": 84,
+  "time_signature": "3/4",
+  "key": "A minor",
+  "melody": [
+   {
+    "midi": 69,
+    "beats": 1
+   },
+   {
+    "midi": 72,
+    "beats": 1
+   },
+   {
+    "midi": 76,
+    "beats": 1
+   },
+   {
+    "midi": 74,
+    "beats": 1.5
+   },
+   {
+    "midi": 72,
+    "beats": 0.5
+   },
+   {
+    "midi": 71,
+    "beats": 1
+   },
+   {
+    "midi": 69,
+    "beats": 1
+   },
+   {
+    "midi": 76,
+    "beats": 1
+   },
+   {
+    "midi": 77,
+    "beats": 1
+   },
+   {
+    "midi": 76,
+    "beats": 3
+   },
+   {
+    "midi": 77,
+    "beats": 1
+   },
+   {
+    "midi": 76,
+    "beats": 1
+   },
+   {
+    "midi": 74,
+    "beats": 1
+   },
+   {
+    "midi": 72,
+    "beats": 1
+   },
+   {
+    "midi": 71,
+    "beats": 1
+   },
+   {
+    "midi": 68,
+    "beats": 1
+   },
+   {
+    "midi": 69,
+    "beats": 1
+   },
+   {
+    "midi": 72,
+    "beats": 0.5
+   },
+   {
+    "midi": 71,
+    "beats": 0.5
+   },
+   {
+    "midi": 75,
+    "beats": 1
+   },
+   {
+    "midi": 76,
+    "beats": 1
+   },
+   {
+    "midi": 69,
+    "beats": 2
+   }
+  ],
+  "bass_per_bar": [
+   45,
+   52,
+   53,
+   52,
+   50,
+   52,
+   53,
+   45
+  ],
+  "final_note": {
+   "midi": 69,
+   "detune_semitones": -0.45
+  }
+ },
+ "music_cues": [
+  {
+   "start": 4.0,
+   "end": 22.0,
+   "version": "innocent",
+   "gain_db": -22
+  },
+  {
+   "start": 22.0,
+   "end": 47.0,
+   "version": "detuned",
+   "gain_db": -20
+  },
+  {
+   "start": 66.6,
+   "end": 107.0,
+   "version": "reversed",
+   "gain_db": -19
+  },
+  {
+   "start": 119.0,
+   "end": 120.0,
+   "version": "final_note",
+   "gain_db": -18
+  }
+ ],
+ "jump_scares": [
+  1.5,
+  52.0,
+  65.0,
+  107.0
+ ],
+ "whispers": [
+  {
+   "start": 94.3,
+   "end": 96.8,
+   "text": "Please help…"
+  },
+  {
+   "start": 97.2,
+   "end": 98.8,
+   "text": "my neighbor…"
+  },
+  {
+   "start": 99.2,
+   "end": 100.8,
+   "text": "42 Elm Street."
+  }
+ ]
+}
