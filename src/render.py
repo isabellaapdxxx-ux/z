@@ -178,6 +178,7 @@ def main():
                '-map', '0:v:0', '-map', '1:a:0',
                '-c:v', 'libx264', '-preset', 'slow', '-crf', '21', '-maxrate', '5M', '-bufsize', '10M',
                '-profile:v', 'high', '-level', '4.1', '-pix_fmt', 'yuv420p', '-r', str(FPS), '-g', '60',
+               '-af', 'volume=-1.9dB,alimiter=limit=0.82:attack=2:release=60:level=false',
                '-c:a', 'aac', '-b:a', '192k', '-ar', '48000',
                '-t', f'{DURATION:.3f}', '-movflags', '+faststart', out]
         subprocess.run(cmd, check=True)
