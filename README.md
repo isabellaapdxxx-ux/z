@@ -14,7 +14,7 @@
 | Characters/props | `src/assets.py`, `src/sets.py` | Original blocky characters (boy, cousin, police) and sets (basement, house, hallway, locked room, closet, police car). Faces, posters, newspaper, list, clock and phone screens are drawn with Pillow. |
 | Shots | `src/shots.py` | The 40-shot timeline: cameras, animation and per-shot effects. |
 | Inserts | `src/inserts.py` | 2D insert shots: the phone UI in hand, the newspaper, the list and the clock. |
-| Overlays | `src/overlay.py` | Word-by-word TikTok captions (white, black outline, key words red, inside the safe zone), title cards, corner text, glitch, shake/zoom, vignette, bloom and grain. |
+| Overlays | `src/overlay.py` | Word-by-word TikTok captions (white, black outline, key words red, inside the safe zone), title cards, glitch, shake/zoom, vignette, bloom and grain. |
 | Render | `src/render.py` | Renders the frames in parallel to H.264 segments, then muxes the final MP4. |
 
 ## Rebuild

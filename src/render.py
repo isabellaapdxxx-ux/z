@@ -104,7 +104,6 @@ def compose(f):
     if fr['hud'] == 'rewind':
         O.rewind_hud(img, t)
     caps().draw(img, t)
-    O.draw_corner(img, t)
     return img
 
 

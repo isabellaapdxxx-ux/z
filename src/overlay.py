@@ -1,4 +1,4 @@
-"""2D overlays and post effects: captions, title cards, corner text, glitch,
+"""2D overlays and post effects: captions, title cards, (unused) corner text, glitch,
 vignette, grain, bloom, camera shake/zoom."""
 import json
 import math
