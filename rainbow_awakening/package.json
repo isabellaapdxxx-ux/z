@@ -1,0 +1,10 @@
+{
+  "name": "rainbow-awakening",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Renders the 'Rainbow Awakening' blocky 3D TikTok video",
+  "dependencies": {
+    "three": "0.170.0",
+    "@fontsource/lilita-one": "5.1.0"
+  }
+}

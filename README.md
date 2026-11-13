@@ -1,5 +1,7 @@
 # "My cousin heard me call 911..." — Roblox-style TikTok horror story
 
+> Also in this repo: [`rainbow_awakening/`](rainbow_awakening/README.md), a 90 s blocky 3D TikTok short about Max and his rainbow power.
+
 - **`final_video.mp4`**: the finished video. 1080x1920 (9:16), 30 fps, H.264 + AAC, exactly 120.0 s.
 - **`STORYBOARD.md`**: the script and storyboard with timestamps (shots, voice lines, captions, sound cues).
 - **`src/`**: the code that generates everything. There are no external art, music or video assets.
