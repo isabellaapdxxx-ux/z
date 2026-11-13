@@ -76,7 +76,9 @@ CHUNK_PAUSE = {'…': 0.36, '.': 0.30, '—': 0.10, '?': 0.30, '!': 0.28}
 
 # Look
 ANCHOR = np.array([540.0, 800.0])   # screen point the camera frames (subject sits above captions)
-XFADE = 0.5                          # crossfade length between scenes (s)
+XFADE = 0.5                          # crossfade length used by shot cameras (s)
+TRANS = 0.6                          # transition length at each cut (s)
+TRANSITIONS = ['zoom', 'flash', 'whip', 'spin']   # cut 1->2, 2->3, 3->4, 4->5
 ACCENT = (1.0, 0.60, 0.20)           # warm orange caption highlight
 STAR_R = 250.0                       # star radius in world px
 BH_RS = 150.0                        # black hole shadow radius in world px
@@ -458,6 +460,25 @@ def cue_times(tl):
     return ev
 
 
+def build_popups(tl, ev):
+    """Fact cards that pop in on cue words: (start, end, kind, title, subtitle)."""
+    cards = [
+        (word_time(tl, 0, 'massive') - 0.1, 'card', '20+ SOLAR MASSES', 'big enough to become a black hole'),
+        (word_time(tl, 0, 'millions'), 'card', 'LIFESPAN: ~10 MILLION YEARS', 'our Sun gets about 10 billion'),
+        (ev['fuel'] - 0.05, 'gauge', 'CORE FUEL', None),
+        (ev['explode'] + 0.08, 'big', 'SUPERNOVA', 'outshines its entire galaxy'),
+        (word_time(tl, 2, 'nothing'), 'card', 'ESCAPE SPEED > LIGHT SPEED', 'so nothing gets back out'),
+        (ev['bends'], 'card', 'GRAVITATIONAL LENSING', 'light follows curved space'),
+    ]
+    out = []
+    for i, (t0, kind, title, sub) in enumerate(cards):
+        t1 = t0 + (1.6 if kind == 'big' else 2.1)
+        if i + 1 < len(cards):
+            t1 = min(t1, cards[i + 1][0] - 0.12)
+        out.append(dict(t0=t0, t1=t1, kind=kind, title=title, sub=sub))
+    return out
+
+
 def build_phrases(tl, font):
     """Caption pages: sentence/clause sized, at most two lines."""
     words = tl['words']
@@ -654,6 +675,15 @@ def sfx_shimmer(rng, d):
     return reverb(out, 4.5, 0.6, bright=9000)
 
 
+def sfx_pop(rng):
+    """Bubbly UI pop: fast pitch drop + click."""
+    t = tt(0.25)
+    f = 380 + 900 * np.exp(-t / 0.018)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.05)
+    x += hp(rng.standard_normal(len(t)), 3000) * np.exp(-t / 0.004) * 0.3
+    return reverb(stereo(x, 0, 0.3), 0.8, 0.18, bright=8000)
+
+
 def build_bed(tl, ev, rng):
     S = tl['scenes']
     t = np.arange(NS) / SR
@@ -717,6 +747,12 @@ def build_bed(tl, ev, rng):
     r2 = max(2.5, S[4] - ev['anything'])
     bus.add(sfx_riser(rng, r2), S[4] - r2, 0.40)
     bus.add(sfx_boom(rng, 0.6), S[4], 0.55)
+
+    # pops for the fact cards and labels
+    for pu in build_popups(tl, ev):
+        bus.add(sfx_pop(rng), pu['t0'], 0.5 if pu['kind'] != 'big' else 0.3)
+    bus.add(sfx_pop(rng), ev['horizon'] + 0.7, 0.4)
+    bus.add(sfx_pop(rng), ev['stretched'], 0.4)
 
     # shimmer / reverb tail for the finale
     sh = sfx_shimmer(rng, DURATION - S[4])
@@ -873,6 +909,9 @@ class Assets:
         self.f_label = ImageFont.truetype(find_font('Inter', 'SemiBold'), 40)
         self.f_sub = ImageFont.truetype(find_font('Inter', 'Medium'), 29)
         self.f_title_path = find_font('Inter Display', 'Black')
+        self.f_small = ImageFont.truetype(find_font('Inter', 'SemiBold'), 25)
+        self.font_paths = dict(xb=find_font('Inter', 'ExtraBold'), bl=find_font('Inter', 'Black'),
+                               md=find_font('Inter', 'Medium'))
         self.cache = {}
 
 
@@ -880,6 +919,7 @@ A = None      # Assets, built once in the parent process and inherited by the wo
 TL = None     # timeline
 EV = None     # cue times
 PHRASES = None
+POPUPS = None
 
 
 # ============================================================================ 5. rendering primitives
@@ -1443,14 +1483,145 @@ def caption_patch(ph_i, active):
     shadow = soft(allm, 9) * 0.85
     glow_now = soft(m['now'], 12)
     glow_all = soft(allm, 5) * 0.18
-    rgb = (m['done'][..., None] * 1.0 + m['next'][..., None] * 0.80
-           + m['now'][..., None] * np.array(ACCENT, np.float32))
-    alpha = np.clip(m['done'] + m['now'] + m['next'] * 0.92, 0, 1)
+    rgb = m['done'][..., None] * 1.0 + m['next'][..., None] * 0.80          # spoken word drawn separately
+    alpha = np.clip(m['done'] + m['next'] * 0.92, 0, 1)
     rgb = rgb / np.maximum(alpha[..., None], 1e-3)
+    ys_, xs_ = np.nonzero(m['now'] > 0.02)
+    if len(ys_):                                   # the active word + its glow, cropped for popping
+        pad = 26
+        y0_, y1_ = max(0, ys_.min() - pad), min(hh, ys_.max() + pad + 1)
+        x0_, x1_ = max(0, xs_.min() - pad), min(W, xs_.max() + pad + 1)
+        now = (m['now'][y0_:y1_, x0_:x1_], glow_now[y0_:y1_, x0_:x1_], (x0_ + x1_) / 2, (y0_ + y1_) / 2)
+    else:
+        now = None
     out = (rgb.astype(np.float32), alpha.astype(np.float32), shadow.astype(np.float32),
-           glow_now.astype(np.float32), glow_all.astype(np.float32))
+           now, glow_all.astype(np.float32))
     A.cache[key] = out
     return out
+
+
+def scale_mask(m, sc):
+    if abs(sc - 1) < 1e-3:
+        return m
+    h, w = m.shape
+    return np.asarray(Image.fromarray(m, 'F').resize((max(1, round(w * sc)), max(1, round(h * sc))),
+                                                       Image.BILINEAR), np.float32)
+
+
+def card_image(kind, title, sub=None, frac=None):
+    """Rounded glass card with an accent rim (RGBA uint8 PIL image, 2x supersampled)."""
+    key = ('card', kind, title, sub, None if frac is None else round(frac, 2))
+    if key in A.cache:
+        return A.cache[key]
+    S = 2
+    big = kind == 'big'
+    ft = ImageFont.truetype(A.font_paths['bl' if big else 'xb'], (78 if big else 44) * S)
+    fs = ImageFont.truetype(A.font_paths['md'], (30 if big else 28) * S)
+    pad, dot, gapx = 30 * S, (0 if big else 16 * S), (0 if big else 16 * S)
+    tw = ft.getlength(title)
+    a_t, d_t = ft.getmetrics()
+    body_h = a_t + d_t
+    sub_w = fs.getlength(sub) if sub else 0
+    if kind == 'gauge':
+        sub_w, body_h = 420 * S, body_h + 34 * S
+    elif sub:
+        body_h += sum(fs.getmetrics()) + 4 * S
+    w = int(max(tw + dot + gapx, sub_w) + 2 * pad)
+    h = int(body_h + pad * 1.4)
+    m = 24 * S                                                # margin for the drop shadow
+    im = Image.new('RGBA', (w + 2 * m, h + 2 * m), (0, 0, 0, 0))
+    sh = Image.new('L', im.size, 0)
+    ImageDraw.Draw(sh).rounded_rectangle([m, m + 6 * S, m + w, m + h + 6 * S], 28 * S, fill=150)
+    im.putalpha(sh.filter(ImageFilter.GaussianBlur(12 * S)))
+    d = ImageDraw.Draw(im)
+    acc = tuple(int(c * 255) for c in ACCENT)
+    d.rounded_rectangle([m, m, m + w, m + h], 28 * S, fill=(14, 12, 20, 215), outline=acc + (235,), width=3 * S)
+    x, y = m + pad, m + int(pad * 0.7)
+    if dot:
+        cy = y + a_t * 0.62
+        d.ellipse([x, cy - dot / 2, x + dot, cy + dot / 2], fill=acc + (255,))
+        x += dot + gapx
+    d.text((x if not big else m + (w - tw) / 2, y), title, font=ft, fill=(255, 255, 255, 255))
+    y += a_t + d_t
+    if kind == 'gauge':
+        bw, bh, bx = 420 * S, 18 * S, m + pad
+        by = y + 6 * S
+        d.rounded_rectangle([bx, by, bx + bw, by + bh], bh // 2, fill=(255, 255, 255, 45))
+        col = tuple(int(255 * c) for c in np.array(ACCENT) * frac + np.array([1.0, 0.18, 0.12]) * (1 - frac))
+        if frac > 0.01:
+            d.rounded_rectangle([bx, by, bx + max(bh, int(bw * frac)), by + bh], bh // 2, fill=col + (255,))
+        pct = f'{int(round(frac * 100))}%'
+        d.text((m + w - pad - ft.getlength(pct) * 0.6, m + int(pad * 0.7) + 6 * S), pct,
+               font=ImageFont.truetype(A.font_paths['xb'], 24 * S), fill=col + (255,))
+    elif sub:
+        sx = m + (w - sub_w) / 2 if big else x
+        d.text((sx, y + 4 * S), sub, font=fs, fill=acc + (255,) if big else (225, 222, 235, 255))
+    out = im.resize((im.width // S, im.height // S), Image.LANCZOS)
+    A.cache[key] = out
+    return out
+
+
+def pop_curve(t, t0, t1):
+    """Spring-in / shrink-out scale and opacity for a pop-up."""
+    if t < t0 or t > t1:
+        return 0.0, 0.0
+    a, e = t - t0, t1 - t
+    sc = 1 - 0.72 * math.exp(-a / 0.075) * math.cos(a * 24)       # overshoots ~12 %
+    sc *= 1 - 0.2 * (1 - smoothstep(0, 0.22, e))
+    alpha = smoothstep(0, 0.06, a) * smoothstep(0, 0.2, e)
+    return max(sc, 0.05), alpha
+
+
+def draw_popups(frame, t):
+    for pu in POPUPS:
+        sc, al = pop_curve(t, pu['t0'], pu['t1'])
+        if al <= 0.01:
+            continue
+        frac = None
+        if pu['kind'] == 'gauge':                  # fuel drains while it is on screen
+            frac = 0.32 * (1 - ease_io((t - pu['t0'] - 0.25) / 1.0))
+        im = card_image(pu['kind'], pu['title'], pu['sub'], frac)
+        if pu['kind'] == 'big':
+            sc *= 1 + 0.06 * (t - pu['t0'])            # slow push while it holds
+        w, h = max(1, round(im.width * sc)), max(1, round(im.height * sc))
+        arr = np.asarray(im.resize((w, h), Image.BILINEAR), np.float32) / 255
+        cy = 350 if pu['kind'] == 'big' else 330
+        blend(frame, arr[..., :3], arr[..., 3] * al, int(W / 2 - w / 2), int(cy - h / 2))
+
+
+def draw_progress(frame, t):
+    """Segmented progress bar (one segment per scene) that fills as the video plays, plus a timer."""
+    S = TL['scenes']
+    x0, x1, yc, th, gap = 56, W - 56, 72, 6, 10
+    total = x1 - x0 - gap * (len(S) - 2)
+    xs = np.arange(W, dtype=np.float32) + 0.5
+    track = np.zeros(W, np.float32)
+    fill = np.zeros(W, np.float32)
+    sx, head = float(x0), None
+    for i in range(len(S) - 1):
+        sw = total * (S[i + 1] - S[i]) / DURATION
+        seg = np.clip(xs - sx + 0.5, 0, 1) * np.clip(sx + sw - xs + 0.5, 0, 1)
+        f = clamp01((t - S[i]) / (S[i + 1] - S[i]))
+        fx = sx + sw * f
+        track += seg
+        fill += seg * np.clip(fx - xs + 0.5, 0, 1)
+        if 0 < f < 1:
+            head = fx
+        sx += sw + gap
+    rows = np.arange(yc - 14, yc + 15, dtype=np.float32)
+    prof = np.clip(th / 2 - np.abs(rows - yc) + 0.5, 0, 1)[:, None]
+    y0 = int(rows[0])
+    blend(frame, np.ones((len(rows), W, 3), np.float32), prof * track[None] * 0.22, 0, y0)
+    blend(frame, np.broadcast_to(np.array(ACCENT, np.float32), (len(rows), W, 3)), prof * fill[None], 0, y0)
+    glow = ndimage.gaussian_filter(prof * fill[None], 4) * 0.6
+    add_glow(frame, glow, ACCENT, 0, y0)
+    if head is not None:                            # glowing playhead
+        d = np.hypot(xs[None] - head, rows[:, None] - yc)
+        add_glow(frame, np.exp(-(d / 7) ** 2) * 0.9 + np.clip(5 - d, 0, 1) * 0.6, (1, 0.85, 0.65), 0, y0)
+    el = min(int(t), int(DURATION))
+    draw_text(frame, f'0:{el:02d}', A.f_small, x0, yc + 32, alpha=0.85, shadow=0.6)
+    draw_text(frame, f'0:{int(DURATION):02d}', A.f_small, x1 - A.f_small.getlength('0:30') - 4, yc + 32,
+              alpha=0.55, shadow=0.6)
 
 
 def draw_captions(frame, t):
@@ -1458,16 +1629,22 @@ def draw_captions(frame, t):
         if ph['t0'] <= t < ph['t1']:
             words = [TL['words'][i] for i in ph['idx']]
             active = max([k for k, w in enumerate(words) if w['t0'] <= t + 0.03] or [0])
-            rgb, alpha, shadow, gnow, gall = caption_patch(pi, active)
+            rgb, alpha, shadow, now, gall = caption_patch(pi, active)
             a = smoothstep(0, 0.14, t - ph['t0']) * (1 - smoothstep(ph['t1'] - 0.12, ph['t1'], t))
             dy = int((1 - smoothstep(0, 0.2, t - ph['t0'])) * 14)
             h = alpha.shape[0]
             y0 = int(CAPTION_Y - h / 2) + dy
             blend(frame, np.zeros_like(rgb), shadow * a, 0, y0 + 3)
-            ys, ye = max(0, y0), min(H, y0 + h)
-            frame[ys:ye] += ((gnow * 0.55)[..., None] * np.array(ACCENT, np.float32)
-                             + gall[..., None] * np.array([1, 0.9, 0.8], np.float32))[ys - y0:ye - y0] * a
+            add_glow(frame, gall * a, (1, 0.9, 0.8), 0, y0)
             blend(frame, rgb, alpha * a, 0, y0)
+            if now is not None:                    # spoken word pops: quick scale bump
+                mk, gl, cx, cy = now
+                tau = t - words[active]['t0']
+                sc = 1 + 0.1 * math.sin(math.pi * clamp01(tau / 0.22)) if tau >= 0 else 1.0
+                mk, gl = scale_mask(mk, sc), scale_mask(gl, sc)
+                ox, oy = int(round(cx - mk.shape[1] / 2)), int(round(y0 + cy - mk.shape[0] / 2))
+                add_glow(frame, gl * 0.55 * a, ACCENT, ox, oy)
+                blend(frame, np.broadcast_to(np.array(ACCENT, np.float32), mk.shape + (3,)), mk * a, ox, oy)
 
 
 # ============================================================================ 6. shots
@@ -1606,18 +1783,98 @@ def shot_finale(t, fi):
 SHOTS = [shot_star, shot_supernova, shot_birth, shot_lensing, shot_finale]
 
 
+def warp(frame, scale=1.0, rot=0.0, dx=0.0, dy=0.0, center=ANCHOR):
+    """Scale / rotate (degrees) / shift a display-space frame about center (PIL affine)."""
+    im = frame if isinstance(frame, Image.Image) else Image.fromarray((np.clip(frame, 0, 1) * 255).astype(np.uint8))
+    cx, cy = center
+    th = math.radians(rot)
+    a, b = math.cos(th) / scale, math.sin(th) / scale
+    d, e = -b, a
+    px, py = cx + dx, cy + dy
+    im = im.transform((W, H), Image.AFFINE, (a, b, cx - a * px - b * py, d, e, cy - d * px - e * py),
+                      resample=Image.BILINEAR)
+    return np.asarray(im, np.float32) / 255
+
+
+def motion_blur(frame, n, **kw_range):
+    """Average of n warps, interpolating each keyword's (start, end) range."""
+    im = Image.fromarray((np.clip(frame, 0, 1) * 255).astype(np.uint8))
+    acc = np.zeros((H, W, 3), np.float32)
+    for i in range(n):
+        f = i / max(n - 1, 1)
+        acc += warp(im, **{k: lerp(v[0], v[1], f) for k, v in kw_range.items()})
+    return acc / n
+
+
+def chroma(frame, amt):
+    """Chromatic aberration: red pushed out, blue pulled in."""
+    if amt < 1e-4:
+        return frame
+    out = frame.copy()
+    for c, s in ((0, 1 + amt), (2, 1 - amt)):
+        im = Image.fromarray((np.clip(frame[..., c], 0, 1) * 255).astype(np.uint8), 'L')
+        cx, cy = ANCHOR
+        im = im.transform((W, H), Image.AFFINE, (1 / s, 0, cx - cx / s, 0, 1 / s, cy - cy / s), resample=Image.BILINEAR)
+        out[..., c] = np.asarray(im, np.float32) / 255
+    return out
+
+
+def transition(kind, A_, B_, p):
+    """Blend outgoing frame A_ into incoming B_; p goes 0 -> 1 across the cut."""
+    m = smoothstep(0.42, 0.58, p)
+    bump = math.sin(math.pi * p)
+    if kind == 'zoom':                               # punch in with a zoom blur
+        sa = 1 + 0.45 * p ** 2
+        sb = 1 + 0.3 * (1 - p) ** 2
+        A_ = motion_blur(A_, 6, scale=(sa, sa * (1 + 0.12 * bump))) if m < 1 else A_
+        B_ = motion_blur(B_, 6, scale=(sb, sb * (1 + 0.12 * bump))) if m > 0 else B_
+        out = A_ * (1 - m) + B_ * m
+        return out * (1 + 0.35 * bump)
+    if kind == 'flash':                              # light burst + RGB split
+        out = A_ * (1 - m) + B_ * m
+        out = chroma(out, 0.016 * bump)
+        return out * (1 + 0.25 * math.exp(-((p - 0.5) / 0.12) ** 2))
+    if kind == 'whip':                               # whip pan with motion blur
+        o = W * ease_io(p)
+        canvas = np.zeros((H, W, 3), np.float32)
+        sh = int(round(o))
+        if sh < W:
+            canvas[:, :W - sh] = A_[:, sh:]
+            canvas[:, W - sh:] = B_[:, :sh]
+        else:
+            canvas = B_.copy()
+        blur = int(1 + 260 * bump ** 2)
+        if blur > 2:
+            canvas = ndimage.uniform_filter1d(canvas, blur, axis=1, mode='nearest')
+        return canvas
+    if kind == 'spin':                               # twist out / twist in with rotational blur
+        qa = ease_io(clamp01(p * 2))
+        qb = 1 - ease_io(clamp01(p * 2 - 1))
+        if m < 1:
+            A_ = motion_blur(A_, 6, rot=(7 * qa, 7 * qa + 5 * bump), scale=(1 + 0.3 * qa, 1 + 0.3 * qa))
+        if m > 0:
+            B_ = motion_blur(B_, 6, rot=(-7 * qb, -7 * qb - 5 * bump), scale=(1 + 0.3 * qb, 1 + 0.3 * qb))
+        out = A_ * (1 - m) + B_ * m
+        return chroma(out, 0.008 * bump)
+    return A_ * (1 - m) + B_ * m
+
+
 def render_frame(fi):
     t = fi / FPS
     S = TL['scenes']
     k = max(i for i in range(len(SHOTS)) if S[i] <= t + 1e-9)
-    frame = SHOTS[k](t, fi)
-    if k > 0 and t < S[k] + XFADE / 2:                       # dissolve from the previous shot
-        w = smoothstep(S[k] - XFADE / 2, S[k] + XFADE / 2, t)
-        frame = frame * w + SHOTS[k - 1](t, fi) * (1 - w)
-    if k + 1 < len(SHOTS) and t >= S[k + 1] - XFADE / 2:
-        w = smoothstep(S[k + 1] - XFADE / 2, S[k + 1] + XFADE / 2, t)
-        frame = frame * (1 - w) + SHOTS[k + 1](t, fi) * w
+    frame = None
+    for b in range(1, len(SHOTS)):
+        if abs(t - S[b]) < TRANS / 2:
+            p = (t - S[b] + TRANS / 2) / TRANS
+            frame = transition(TRANSITIONS[b - 1], SHOTS[b - 1](t, fi), SHOTS[b](t, fi), p)
+            break
+    if frame is None:
+        frame = SHOTS[k](t, fi)
+    frame = np.clip(frame, 0, 1)
+    draw_popups(frame, t)
     draw_captions(frame, t)
+    draw_progress(frame, t)
     fade = smoothstep(0, 0.6, t) * (1 - smoothstep(DURATION - 0.9, DURATION - 1 / FPS, t))
     return (np.clip(frame * fade, 0, 1) * 255 + 0.5).astype(np.uint8)
 
@@ -1715,6 +1972,10 @@ def render_stills():
     d = os.path.join(BUILD, 'stills')
     os.makedirs(d, exist_ok=True)
     moments = {
+        'p_pop_mass': POPUPS[0]['t0'] + 0.14, 'p_fuel_gauge': POPUPS[2]['t0'] + 0.9,
+        'p_pop_supernova': POPUPS[3]['t0'] + 0.5, 'p_pop_escape': POPUPS[4]['t0'] + 0.6,
+        'q_trans_zoom': S[1] - 0.1, 'q_trans_flash': S[2], 'q_trans_whip': S[3] + 0.05,
+        'q_trans_spin': S[4] - 0.08,
         'a_star': 2.5, 'b_fuel': EV['fuel'] + 0.4, 'c_collapse': (EV['collapse'] + EV['explode']) / 2,
         'd_supernova_flash': EV['explode'] + 0.12, 'e_supernova': EV['explode'] + 0.7,
         'f_core_crush': EV['bh'] - 0.2, 'g_bh_forming': EV['bh'] + 1.0, 'h_event_horizon': EV['horizon'] + 0.9,
@@ -1731,7 +1992,7 @@ def render_stills():
 # ============================================================================ main
 
 def main():
-    global A, TL, EV, PHRASES
+    global A, TL, EV, PHRASES, POPUPS
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--workers', type=int, default=os.cpu_count() or 4)
     ap.add_argument('--stills', action='store_true', help='only render preview stills of key moments')
@@ -1747,6 +2008,7 @@ def main():
     EV = cue_times(TL)
     A = Assets()
     PHRASES = build_phrases(TL, A.f_cap)
+    POPUPS = build_popups(TL, EV)
     S = TL['scenes']
     for i, s in enumerate(SCRIPT):
         log(f'  scene {i + 1} {s["key"]:<9} {S[i]:5.2f}-{S[i + 1]:5.2f}s  voice {TL["vo_start"][i]:5.2f}-{TL["vo_end"][i]:5.2f}s')
