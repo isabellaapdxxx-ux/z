@@ -197,9 +197,23 @@ def estimate_word_times(x, words, weights):
         else:
             i += 1
     pauses = [k for k, w in enumerate(words[:-1]) if re.search(r'[,;:]$', w)]
-    runs = sorted(sorted(runs, key=lambda r: r[0] - r[1])[:len(pauses)])
-    if len(runs) != len(pauses):
-        pauses, runs = [], []
+    by_len = sorted(runs, key=lambda r: r[0] - r[1])
+    anchors = dict(zip(pauses, sorted(by_len[:len(pauses)]))) if len(by_len) >= len(pauses) else {}
+    # long pauses the text does not mark (no comma) still split words: give each one to
+    # the word boundary whose proportional estimate is nearest
+    wts = np.array(weights, float)
+    est = first + (last - first) * np.cumsum(wts)[:-1] / wts.sum()
+    for ra, rb in by_len[len(anchors):]:
+        if rb - ra < 20:                        # < 100 ms: a stop consonant, not a pause
+            continue
+        free = [k for k in range(len(words) - 1) if k not in anchors]
+        if not free:
+            break
+        k = min(free, key=lambda k: abs(est[k] - (ra + rb) / 2))
+        if abs(est[k] - (ra + rb) / 2) < 70 and all((k - j) * (ra - aa) > 0 for j, (aa, _) in anchors.items()):
+            anchors[k] = (ra, rb)
+    pauses = sorted(anchors)
+    runs = [anchors[k] for k in pauses]
     # segments of words between pauses
     seg_bounds, start_w, start_f = [], 0, first
     for k, (ra, rb) in zip(pauses, runs):
@@ -350,7 +364,7 @@ def synth_voice():
     for eng, settings in backends:
         for setting in settings:
             key = hashlib.sha1(json.dumps([eng.name if eng else 'kokoro', EDGE_VOICE if eng else KOKORO_VOICE,
-                                           setting, [s['vo'] for s in SCRIPT], 3]).encode()).hexdigest()[:12]
+                                           setting, [s['vo'] for s in SCRIPT], 4]).encode()).hexdigest()[:12]
             cache = os.path.join(BUILD, 'voice', key + '.npz')
             if os.path.exists(cache):
                 d = np.load(cache, allow_pickle=True)
@@ -1614,7 +1628,7 @@ def _frame_bytes(fi):
 
 # ============================================================================ 7. encode, mux, verify
 
-X264 = ['-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-tune', 'film', '-pix_fmt', 'yuv420p',
+X264 = ['-c:v', 'libx264', '-preset', 'slow', '-crf', '21', '-tune', 'film', '-pix_fmt', 'yuv420p',
         '-profile:v', 'high', '-g', '60', '-video_track_timescale', '15360', '-movflags', '+faststart']
 
 
@@ -1679,9 +1693,15 @@ def verify(vo_wav):
     log('  caption sync (page appears / first word / measured voice onset):')
     for ph in PHRASES:
         w0 = TL['words'][ph['idx'][0]]
-        a = int(max(0, w0['t0'] - 0.25) * SR / 240)
-        on = a + int(np.argmax(env[a:a + 200] > thr))
-        onset = on * 240 / SR
+        # measured onset = the silence->speech transition nearest the caption's first word
+        c = int(w0['t0'] * SR / 240)
+        a, b = max(1, c - 80), min(len(env), c + 80)
+        loud = env[a - 1:b] > thr
+        rises = np.where(~loud[:-1] & loud[1:])[0] + a
+        if len(rises) == 0:
+            onset = w0['t0']                    # no pause before it: speech runs on
+        else:
+            onset = rises[np.argmin(np.abs(rises - c))] * 240 / SR
         err = w0['t0'] - onset
         worst = max(worst, abs(err))
         text = ' '.join(TL['words'][i]['text'] for i in ph['idx'])
