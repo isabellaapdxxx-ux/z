@@ -1640,9 +1640,10 @@ def draw_captions(frame, t):
             if now is not None:                    # spoken word pops: quick scale bump
                 mk, gl, cx, cy = now
                 tau = t - words[active]['t0']
-                sc = 1 + 0.1 * math.sin(math.pi * clamp01(tau / 0.22)) if tau >= 0 else 1.0
+                bump = math.sin(math.pi * clamp01(tau / 0.24)) if tau >= 0 else 0.0
+                sc = 1 + 0.04 * bump                   # lift + tiny scale: never touches its neighbours
                 mk, gl = scale_mask(mk, sc), scale_mask(gl, sc)
-                ox, oy = int(round(cx - mk.shape[1] / 2)), int(round(y0 + cy - mk.shape[0] / 2))
+                ox, oy = int(round(cx - mk.shape[1] / 2)), int(round(y0 + cy - mk.shape[0] / 2 - 9 * bump))
                 add_glow(frame, gl * 0.55 * a, ACCENT, ox, oy)
                 blend(frame, np.broadcast_to(np.array(ACCENT, np.float32), mk.shape + (3,)), mk * a, ox, oy)
 
