@@ -580,7 +580,7 @@ def sfx_riser(rng, d):
     f = 98 * 2 ** (2.5 * p ** 1.8)
     ph = 2 * np.pi * np.cumsum(f) / SR
     tone = (signal.sawtooth(ph) + signal.sawtooth(ph * 1.007) + 0.5 * signal.sawtooth(ph * 2.003)) / 2.5
-    tone = lp(tone, 900 + 5000 * p ** 2)
+    tone = lp(tone, 900) * (1 - p ** 2) + lp(tone, 6000) * p ** 2   # filter opens as it rises
     trem_rate = 4 + 18 * p ** 2
     trem = 0.75 + 0.25 * np.sin(2 * np.pi * np.cumsum(trem_rate) / SR)
     x = (nz + tone * 0.55) * trem * p ** 2.4
