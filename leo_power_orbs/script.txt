@@ -1,0 +1,371 @@
+LEO AND THE POWER ORBS — SCRIPT & TIMELINE
+DRAFT v1 — FOR APPROVAL (no audio generated, nothing rendered yet)
+=====================================================================
+
+Format     1080x1920 vertical, 30 fps, H.264 + AAC 48 kHz stereo
+Length     90.00 s = exactly 2700 video frames = exactly 4,320,000 audio samples
+           (checked with ffprobe after muxing; re-muxed if off by even one frame)
+Beats      44 beats. Times are fixed and never move.
+
+HOW VO LINES ARE FITTED
+  Each line is generated as its own MP3 and its silence is trimmed, then it is measured.
+  Every line must sit inside its VO WINDOW (beat start +0.10 s ... beat end -0.05 s).
+  1. Fits                -> placed as is.
+  2. Up to 15% too long  -> sped up (pitch-preserving), at most 1.15x.
+  3. Still too long      -> replaced with the pre-approved SHORT line listed below it.
+  Lines marked (!) will probably need step 2 or 3.
+
+LEGEND
+  VO   = voice-over (Leo narrating)
+  SFX  = sound effect @ start time. Every SFX also gets an on-screen [BRACKET] caption.
+  MUS  = theme-song state. FULL = 100 %, BED = ducked to ~20 %.
+
+---------------------------------------------------------------------
+HOOK (0–8 s)
+---------------------------------------------------------------------
+01  00:00.00–00:02.00
+    VISUAL  Black void. Extreme close-up of 4 orbs (purple, gold, black with a violet
+            rim, rainbow) bobbing in a row. Slow push-in, bloom halos, drifting dust.
+    VO      "What if you could get…"
+    SFX     [DEEP HUM] @0.00 (sustained 2.0 s)
+    MUS     none (hum only)
+
+02  00:02.00–00:04.00
+    VISUAL  Fast pull-back; the orbs start circling each other faster and faster,
+            leaving light trails. Small shake on the whoosh.
+    VO      "…ANY superpower?!"
+    SFX     [WHOOSH] @2.00
+    MUS     FULL: theme hook stinger — "Power Orbs!"
+            (music dips ~6 dB only under the spoken words so the VO stays loudest)
+
+03  00:04.00–00:06.00
+    VISUAL  Title card "LEO AND THE POWER ORBS" slams in from 3x scale onto a
+            studded-brick backdrop: white flash, big camera shake, orbs orbit the title.
+    VO      (none)
+    SFX     [BOOM] @4.00
+    MUS     FULL: theme
+
+04  00:06.00–00:08.00
+    VISUAL  Rarity ladder flashes in, one tier per ding, each in its orb color and each
+            slam bigger than the last:
+            COMMON (purple) 6.10 / DECENT (gold) 6.55 / RARE (black) 7.00 /
+            EXTREMELY RARE (rainbow) 7.45
+    VO      "But some are WAY rarer than others…"  (!)
+            SHORT: "But some are WAY rarer…"
+    SFX     [DING] x4 @6.10 / 6.55 / 7.00 / 7.45 — one ding pitched up 0/+3/+7/+12 semitones
+    MUS     BED
+
+---------------------------------------------------------------------
+INTRO (8–14 s)
+---------------------------------------------------------------------
+05  00:08.00–00:10.00
+    VISUAL  Sunny blocky town: studded-grass baseplate, brick houses, cube trees,
+            blocky clouds. Leo slumps on a block bench and yawns (arms stretch).
+    VO      "This is me. Leo. And I was SO bored."  (!) — about 2.7 s natural, won't fit 2 s
+            SHORT: "I'm Leo… and I was SO bored."
+    SFX     [BIRDS CHIRPING] @8.00 (bed until 14.00), [YAWN] @8.05
+    MUS     BED — lazy, sleepy version of the theme
+
+06  00:10.00–00:12.00
+    VISUAL  Leo kicks a small red block; it rebounds off a wall and bonks his head
+            (squash and stretch, small shake).
+    VO      "Nothing ever happens here…"
+    SFX     [BONK] @11.20
+    MUS     BED
+
+07  00:12.00–00:14.00
+    VISUAL  A purple glow pulses behind a blocky bush and sparkles drift up.
+            Whip-pan as Leo turns to look.
+    VO      "…until THIS happened."
+    SFX     [MAGIC SHIMMER] @12.10
+    MUS     BED
+
+---------------------------------------------------------------------
+PURPLE ORB / COMMON (14–30 s)          music mood: PLAYFUL
+---------------------------------------------------------------------
+08  00:14.00–00:16.00
+    VISUAL  Leo lifts the purple orb out of the bush; purple light on his face.
+    VO      "A purple orb?"
+    SFX     [ORB PICKUP CHIME] @14.30
+    MUS     BED — playful
+
+09  00:16.00–00:18.00
+    VISUAL  Big label "PURPLE – COMMON" pops in with a bounce and a purple sparkle burst.
+    VO      "Common… but still cool!"
+    SFX     [DING!] small @16.05 — rarity ding 1/4: one short, bright, dry bell
+    MUS     BED
+
+10  00:18.00–00:20.00
+    VISUAL  Purple energy ribbons spiral up around Leo; his eyes glow purple; small shake.
+    VO      "Wait… I feel FAST."
+    SFX     [POWER-UP ZAP] @18.10
+    MUS     BED
+
+11  00:20.00–00:23.00
+    VISUAL  Leo zooms through town with speed lines and a purple afterimage trail;
+            the camera whip-pans to follow him on three passes.
+    VO      "SUPER SPEED!"
+    SFX     [WHOOSH] @20.10, [WHOOSH] @21.10, [WHOOSH] @22.10
+    MUS     BED
+
+12  00:23.00–00:25.00
+    VISUAL  Leo runs rings around a confused villager; a "?" pops over the villager's head.
+    VO      "Haha, can't catch me!"
+    SFX     [ZOOM] @23.05, [VILLAGER: "HUH?"] @24.30
+    MUS     BED
+
+13  00:25.00–00:27.00
+    VISUAL  Leo flails as he skids toward a brick wall; sparks and dust fly. Tracking shot.
+    VO      "Uh oh… how do I STOP?!"
+            SHORT: "How do I STOP?!"
+    SFX     [SKID] @25.40
+    MUS     BED
+
+14  00:27.00–00:28.50
+    VISUAL  He smashes into the wall: white impact frame, BIG camera shake. Bricks crumble
+            and fall, and one bonks his head.
+    VO      (none)
+    SFX     [CRASH] @27.00, [BONK] @27.80
+    MUS     BED
+
+15  00:28.50–00:30.00   (1.5 s beat)
+    VISUAL  Leo sits in the rubble, swaying, spiral eyes, stars circling his head.
+    VO      "Okay… maybe I need a better power."  (!) — about 2.5 s natural, won't fit 1.5 s
+            SHORT: "I need a better power…"
+    SFX     [DIZZY TWEET] @28.55
+    MUS     BED
+
+---------------------------------------------------------------------
+GOLD ORB / DECENT (30–46 s)            music mood: HEROIC
+---------------------------------------------------------------------
+16  00:30.00–00:32.00
+    VISUAL  Tilt up a tall, colorful obby tower of floating platforms; a gold sparkle
+            twinkles at the top.
+    VO      "Ooh, what's that up there?"
+    SFX     [SPARKLE] @30.10
+    MUS     BED — heroic
+
+17  00:32.00–00:34.00
+    VISUAL  Three quick cuts of Leo jumping between platforms (squash and stretch),
+            each cut on a boing.
+    VO      "Jump… jump… JUMP!"  (each "jump" lands on a boing)
+    SFX     [BOING] @32.15, [BOING] @32.80, [BOING] @33.45
+    MUS     BED
+
+18  00:34.00–00:36.00
+    VISUAL  At the top, Leo grabs the gold orb and gold light floods the frame.
+    VO      "A GOLD orb!"
+    SFX     [ORB PICKUP CHIME] richer @34.20
+    MUS     BED
+
+19  00:36.00–00:38.00
+    VISUAL  Label "GOLD – DECENT" stamps in and a shiny glint sweeps across it.
+    VO      "Now THAT'S decent!"
+    SFX     [DING!] medium @36.05 — rarity ding 2/4: brighter bell plus shimmer,
+            [CHA-CHING] @36.60
+    MUS     BED
+
+20  00:38.00–00:40.00
+    VISUAL  Gold energy pulses; Leo's arms grow chunky (1.0x to 1.6x) and he flexes;
+            gold sparks fly.
+    VO      "I feel… STRONG."
+    SFX     [POWER-UP RUMBLE] @38.10
+    MUS     BED
+
+21  00:40.00–00:43.00
+    VISUAL  Low angle: Leo lifts a giant stacked block tower over his head; dust falls;
+            shake on the lift.
+    VO      "SUPER STRENGTH!"
+    SFX     [GRUNT] @40.20, [STONE CREAK] @40.80
+    MUS     BED
+
+22  00:43.00–00:44.50   (1.5 s beat)
+    VISUAL  He hurls it into the sky; it shrinks to a dot over the hills and lands far
+            away with a dust puff.
+    VO      "Catch!"
+    SFX     [THROW WHOOSH] @43.10, [DISTANT THUD] @44.10
+    MUS     BED
+
+23  00:44.50–00:46.00   (1.5 s beat)
+    VISUAL  Villagers jump and cheer; confetti blocks fall.
+    VO      "Okay, this is getting good…"  (!)
+            SHORT: "This is getting GOOD…"
+    SFX     [CROWD CHEER] @44.55
+    MUS     BED
+
+---------------------------------------------------------------------
+BLACK ORB / RARE (46–62 s)             music mood: SPOOKY
+---------------------------------------------------------------------
+24  00:46.00–00:48.00
+    VISUAL  The sky fades to dark grey-purple and colors drain; wind blows leaves and
+            small blocks around; villagers hurry indoors.
+    VO      "But then… it got dark."
+    SFX     [WIND] @46.00, [DARK DRONE] @46.00 (bed until 52.00)
+    MUS     BED — spooky
+
+25  00:48.00–00:50.00
+    VISUAL  A blocky cave of dark studded stone and glowing crystals. The black orb hovers,
+            violet rim light, smoke wisps. Slow push-in.
+    VO      "A BLACK orb…"
+    SFX     [HEARTBEAT] @48.00 (loops until 52.00)
+    MUS     BED
+
+26  00:50.00–00:52.00
+    VISUAL  Leo's hand slowly reaches toward it, trembling. Dutch angle.
+    VO      "Should I…?"
+    SFX     [TENSE RISER] @50.00 to 52.00
+    MUS     BED
+
+27  00:52.00–00:54.00
+    VISUAL  He grabs it: a burst of black smoke. Label "BLACK – RARE" appears in black
+            letters with a white outline, with smoke curling off it. Shake.
+    VO      "It's RARE!"
+    SFX     [ORB PICKUP] deep @52.00,
+            [DING!] dramatic @52.10 — rarity ding 3/4: low bell, sub hit, long reverb
+    MUS     BED
+
+28  00:54.00–00:56.00
+    VISUAL  Black smoke wraps around Leo; his eyes glow white; dark aura.
+    VO      "Whoa… SHADOW POWERS."
+    SFX     [DARK WHOOSH] @54.10
+    MUS     BED
+
+29  00:56.00–00:58.00
+    VISUAL  Leo melts into a flat shadow puddle that slides across the floor and vanishes.
+    VO      "Now you see me…"
+    SFX     [TELEPORT POP] @57.20
+    MUS     BED
+
+30  00:58.00–01:00.00
+    VISUAL  Back in town at dusk: Leo pops out of smoke behind a villager, who jumps
+            sky-high in fright.
+    VO      "…now you DON'T!"
+    SFX     [POOF] @58.10, [VILLAGER SCREAM] @58.50 (funny)
+    MUS     BED
+
+31  01:00.00–01:02.00
+    VISUAL  Leo laughs (shoulders bounce) and the smoke fades; a faint rainbow shimmer
+            appears far off in the sky.
+    VO      "This is AWESOME… but wait…"
+            SHORT: "AWESOME… but wait…"
+    SFX     [SHIMMER] distant @61.20
+    MUS     BED
+
+---------------------------------------------------------------------
+RAINBOW ORB / EXTREMELY RARE (62–84 s) music mood: EPIC
+---------------------------------------------------------------------
+32  01:02.00–01:04.00
+    VISUAL  The ground shakes (big shake) and rainbow beams break through the clouds.
+    VO      "What is THAT?!"
+    SFX     [EARTHQUAKE RUMBLE] @62.00
+    MUS     BED — epic
+
+33  01:04.00–01:06.00
+    VISUAL  The rainbow orb slowly descends on a beam; everything starts to glow;
+            Leo stares up.
+    VO      "No way… no WAY…"
+    SFX     [ANGELIC CHOIR] @64.00
+    MUS     BED
+
+34  01:06.00–01:08.00
+    VISUAL  White screen flash, then a HUGE label "RAINBOW – EXTREMELY RARE" with an
+            animated rainbow gradient and sparkle particles. Shake.
+    VO      "EXTREMELY RARE!!!"
+    SFX     [DING!] epic @66.00 — rarity ding 4/4: stacked bell chord, whoosh, huge reverb tail,
+            [CROWD GASP] @66.50
+    MUS     BED
+
+35  01:08.00–01:10.00
+    VISUAL  Slow motion: Leo's hand touches the orb; light ripples outward; particles
+            freeze mid-air.
+    VO      "It's the rarest orb EVER!"
+            SHORT: "The rarest orb EVER!"
+    SFX     [TIME SLOW-DOWN] @68.00
+    MUS     BED (slowed and filtered with the slow-mo)
+
+36  01:10.00–01:12.00
+    VISUAL  Purple, gold and black energy spirals orbit Leo and fuse into a rainbow ring.
+    VO      "All my powers… COMBINED!"
+            SHORT: "All my powers COMBINED!"
+    SFX     [POWER-UP RISER] @70.00
+    MUS     BED
+
+37  01:12.00–01:14.00
+    VISUAL  RAINBOW EXPLOSION: white flash, shockwave ring, sparkle burst. Leo's outfit
+            turns rainbow-striped.
+    VO      (none)
+    SFX     [BIG BOOM] @72.00, [SPARKLE BURST] @72.25
+    MUS     BED
+
+38  01:14.00–01:17.00
+    VISUAL  Leo launches into the sky with a rainbow trail; the camera follows him up
+            past the rooftops.
+    VO      "I can FLY!"
+    SFX     [JET WHOOSH] @74.05, [WIND RUSH] @74.40
+    MUS     BED
+
+39  01:17.00–01:19.00
+    VISUAL  He speeds through blocky clouds and does loop-the-loops with a rainbow ribbon.
+    VO      "WOOHOO!"
+    SFX     [ZOOM] @77.20, [ZOOM] @78.20
+    MUS     BED
+
+40  01:19.00–01:21.00
+    VISUAL  Leo lifts an entire floating island (grass, tree, little house) over his head.
+    VO      "Super strength in the SKY!"
+    SFX     [RUMBLE] @79.10, [HEAVY THUD] @80.50
+    MUS     BED
+
+41  01:21.00–01:24.00
+    VISUAL  Leo shadow-teleports from cloud to cloud: three pops, each with a rainbow
+            flash and a speed blur.
+    VO      "Speed! Strength! Shadows! EVERYTHING!"
+    SFX     [MAGIC SHIMMER] @81.00, [TELEPORT POP] @81.40, [TELEPORT POP] @82.20,
+            [TELEPORT POP] @83.00
+    MUS     BED
+
+---------------------------------------------------------------------
+OUTRO (84–90 s)
+---------------------------------------------------------------------
+42  01:24.00–01:26.00
+    VISUAL  Leo lands in the town square (dust ring, shake) and strikes a superhero pose;
+            the villagers cheer.
+    VO      "Not bored anymore!"
+    SFX     [LANDING THUD] @84.00, [CROWD CHEER] @84.30
+    MUS     BED — epic, rolling into the theme
+
+43  01:26.00–01:28.00
+    VISUAL  Close-up: Leo looks into the camera with all 4 orbs floating beside him.
+    VO      "Which orb would YOU pick?"
+    SFX     [ORB HUM] @86.00
+    MUS     FULL: theme ending (dips ~6 dB only under the spoken words)
+
+44  01:28.00–01:30.00
+    VISUAL  Leo winks (sparkle on the wink) and "COMMENT YOUR ORB!" pops in. End card with
+            an original "POWER ORBS" logo (4 orbs around the title), held for the last 0.5 s.
+    VO      "Comment below!"
+    SFX     [WINK DING] @88.30
+    MUS     FULL: theme ending; the final hit lands about 89.3 and the tail fades out by 90.00
+
+=====================================================================
+SOUND DESIGN NOTES
+  Rarity dings escalate:  small (16.05) -> medium (36.05) -> dramatic (52.10) -> epic (66.00)
+    growing in length (~0.6 s / 1.2 s / 2.5 s / 4 s), weight (more low end each time),
+    reverb size, and level (+0 / +2 / +4 / +6 dB relative to the first).
+  Music moods:  hook = theme, intro = sleepy, purple = playful, gold = heroic,
+                black = spooky, rainbow = epic, outro = theme ending.
+  Mix:  VO loudest > SFX medium > music low (BED ~20 %).
+        Final master: about -14 LUFS integrated, true peak <= -1 dBTP.
+
+CAPTION PLAN  (1080x1920; avoid the bottom 20 % (y > 1536) and right edge (x > 920))
+  VO captions   Inter Black, white, thick black outline, 2–3 words per chunk, each word
+                pops in (scale 125 % -> 100 %) as it is spoken, using ElevenLabs character
+                timestamps. Centered at x≈500, y≈1180–1400.
+  SFX captions  [IN BRACKETS], Inter Black Italic, about 55 % of VO size, cyan with a dark
+                outline, same pop animation, upper band y≈260–340. They stack when sounds overlap.
+  Rarity words in captions and labels use the orb's color:
+    PURPLE / COMMON / SUPER SPEED       -> purple  #B347FF
+    GOLD / DECENT / SUPER STRENGTH      -> gold    #FFC61A
+    BLACK / RARE / SHADOW POWERS        -> black text with a white outline
+    RAINBOW / EXTREMELY RARE            -> rainbow gradient
+  Rarity labels and the title card sit in the band y≈420–780.
