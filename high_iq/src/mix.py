@@ -296,7 +296,7 @@ def main():
             ("l115", 1.2), ("t130", 1.0), ("gifted", 1.15), ("p2", 1.3), ("t145", 1.05), ("r1000", 1.2),
             ("r30000", 1.3), ("herit", 1.0), ("herit80", 1.15), ("gene", 0.9), ("env", 1.0), ("food", 1.0),
             ("sleep", 1.12), ("books", 1.25), ("bulb", 1.4), ("nature", 1.0), ("nurture", 1.12),
-            ("ring", 1.0), ("follow", 1.1)]
+            ("ring", 1.0)]
     for key, p in pops:
         place(sfx, pop(p), ev[key], -15)
     rz = riser(2.2)

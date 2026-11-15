@@ -27,8 +27,7 @@ SENTENCES = [
     (6, 0.30, "And environment matters too."),
     (6, 0.60, "Nutrition, sleep, education and curiosity all shape how a brain grows."),
     (7, 0.55, "So a high IQ is nature and nurture working together."),
-    (7, 0.55, "And remember: IQ measures some kinds of intelligence, not all of them."),
-    (8, 0.00, "Follow for more."),
+    (7, 0.00, "And remember: IQ measures some kinds of intelligence, not all of them."),
 ]
 
 

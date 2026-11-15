@@ -956,44 +956,13 @@ def scene_scale(c, t):
     if ap > 0:
         draw_text(c, "IQ", cx, cy + 40, 120, WHITE, ap, glow=20, glow_color=CYAN, weight="dblack")
         draw_text(c, "MEASURES", cx, cy - 80, 34, CYAN, some, weight="black", spacing=4)
-        draw_text(c, "THESE", cx, cy + 110, 34, CYAN, some * (1 - notall), weight="black", spacing=4)
-        draw_text(c, "NOT THESE", cx, cy + 110, 34, MAGENTA, notall, weight="black", spacing=4)
+        draw_text(c, "THESE", cx, cy + 110, 34, CYAN, some * (1 - prog(t, e["notall"] - 0.2, 0.15)),
+                  weight="black", spacing=4)
+        draw_text(c, "NOT THESE", cx, cy + 110, 34, MAGENTA, prog(t, e["notall"], 0.25), weight="black", spacing=4)
 
 
-# ------------------------------------------------------------------ scene 8: outro
-def scene_outro(c, t):
-    e = EV
-    t0 = TL["scenes"][7]["start"]
-    a = ease_out(prog(t, t0, 0.5))
-    draw_brain(c, 540, 470, 0.72 + 0.03 * math.sin(t * 4), t, a)
-    s = pop(t, e["follow"])
-    if s > 0:
-        c.save(); c.translate(540, 760); c.scale(s, s)
-        shader = skia.GradientShader.MakeLinear([skia.Point(-300, 0), skia.Point(300, 0)], [col(CYAN), col(MAGENTA)])
-        draw_text(c, "FOLLOW", 0, 0, 150, WHITE, glow=26, glow_color=PURPLE, shader=shader, weight="dblack")
-        draw_text(c, "FOR MORE", 0, 100, 78, WHITE, weight="dblack", spacing=6)
-        c.restore()
-    b = pop(t, e["follow"] + 0.35, 0.5)
-    if b > 0:
-        beat = (t - e["follow"]) * 1.6
-        pulse = 1 + 0.06 * max(0, math.sin(beat * 2 * math.pi)) ** 2
-        c.save(); c.translate(540, 1050); c.scale(b * pulse, b * pulse)
-        for k in range(2):
-            q = (beat + k * 0.5) % 1
-            c.drawRRect(rrect(-250 - 60 * q, -70 - 60 * q, 500 + 120 * q, 140 + 120 * q, 70 + 60 * q),
-                        paint(MAGENTA, (1 - q) * 0.6, stroke=4))
-        r = rrect(-250, -70, 500, 140, 70)
-        g = skia.GradientShader.MakeLinear([skia.Point(-250, 0), skia.Point(250, 0)], [col((255, 40, 110)), col(MAGENTA)])
-        c.drawRRect(r, paint(MAGENTA, 0.7, blur=30))
-        c.drawRRect(r, skia.Paint(AntiAlias=True, Shader=g))
-        c.drawRRect(r, paint(WHITE, 0.5, stroke=3))
-        draw_text(c, "+  FOLLOW", 0, 24, 66, WHITE, weight="dblack", spacing=2)
-        c.restore()
-
-
-SCENES = {1: scene_hook, 2: scene_curve, 4: scene_stadium, 5: scene_dna, 6: scene_icons, 7: scene_scale,
-          8: scene_outro}
-TRANS = {2: "zoom", 4: "whip", 5: "glitch", 6: "slide", 7: "whip", 8: "zoom"}
+SCENES = {1: scene_hook, 2: scene_curve, 4: scene_stadium, 5: scene_dna, 6: scene_icons, 7: scene_scale}
+TRANS = {2: "zoom", 4: "whip", 5: "glitch", 6: "slide", 7: "whip"}
 TD = 0.42  # transition length (s)
 
 

@@ -17,7 +17,7 @@ BUILD = os.path.join(HERE, "..", "build")
 SR = 48000
 DURATION = 60.0
 LEAD = 0.12            # voice starts right away: the hook must land in the first second
-VO_END_TARGET = 59.2   # leaves ~0.8 s of outro after "Follow for more"
+VO_END_TARGET = 58.9   # the last line ends here; the "IQ != ALL" ring holds to 60 s
 PAUSE_FLOOR = 0.16     # pauses are compressed toward this, so short beats never vanish
 MAX_TEMPO = 0.05       # at most 5 % speed change
 
@@ -193,8 +193,6 @@ def build_events(sents, words):
         # scene 7: scale
         "nature": W(17, "nature"), "nurture": W(17, "nurture"), "together": W(17, "together"),
         "ring": W(18, "IQ"), "some": W(18, "some"), "notall": W(18, "all"),
-        # scene 8
-        "follow": W(19, "Follow"),
     }
     return {k: round(float(v), 3) for k, v in ev.items()}
 
@@ -206,7 +204,7 @@ def main():
     words = align(sents, heard)
     events = build_events(sents, words)
     scenes = []
-    for sc in range(1, 9):
+    for sc in sorted({s["scene"] for s in sents}):
         first = min(s["start"] for s in sents if s["scene"] == sc)
         scenes.append(dict(scene=sc, start=0.0 if sc == 1 else round(first - 0.22, 3)))
     # scene 3 continues scene 2's curve: its "transition" is the camera zoom itself
