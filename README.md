@@ -30,3 +30,21 @@ python src/storyboard.py
 
 Voice models are not stored in this repository. They come from the `thewh1teagle/kokoro-onnx` GitHub release
 `model-files-v1.0` (`kokoro-v1.0.onnx`, `voices-v1.0.bin`).
+
+---
+
+# iPhone 17 Pro Max: 30 s TikTok ad (fan-made)
+
+A creator-style ad, **not an official Apple ad**. There is no Apple logo and no Apple photos, video or music. The phone is drawn in code, and the music and sound effects are synthesized.
+
+- **`make_tiktok_ad.py`**: one script (Pillow + NumPy + ffmpeg). Text, colors, voice, levels and timings are in the `CONFIG` / `SCENES` block at the top.
+- **`output/tiktok_ad.mp4`**: 1080x1920, 30 fps, H.264 (yuv420p) + AAC, exactly 30.00 s, about -14 LUFS.
+- **`output/tiktok_ad.srt`**: captions, also burned into the video.
+- **`output/previews/`**: the busiest frame of each scene, a `_zones` version showing TikTok's UI zones, and `contact_sheet.png`.
+
+```bash
+python make_tiktok_ad.py                # full build (about 1-2 min on 4 cores)
+python make_tiktok_ad.py --preview-only # voice + audio + preview PNGs only
+```
+
+Voice: edge-tts (`en-US-GuyNeural`, +10%), falling back to gTTS and then ffmpeg `flite`. edge-tts needs network access to `speech.platform.bing.com`.
