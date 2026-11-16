@@ -208,6 +208,41 @@ for k, c in enumerate(GLITCH_CUTS):
 for k, c in enumerate(MINI_GLITCHES):
     place(glitch, static_burst(0.09, 300 + k, -34), c)
 
+# ---------------------------------------------------------------- transition sounds
+def whoosh(length, seed, pan_sweep=True):
+    """Air whoosh: noise through a band-pass that sweeps up then down, peaking at the cut."""
+    r = np.random.default_rng(seed)
+    n = int(length * SR)
+    nz = r.standard_normal(n)
+    out = np.zeros(n)
+    steps = 24
+    edges = np.linspace(0, n, steps + 1).astype(int)
+    for k in range(steps):               # piecewise band-pass sweep
+        x = (k + 0.5) / steps
+        fc = 250 + 2600 * np.sin(np.pi * x) ** 2
+        seg = filt(nz[max(0, edges[k] - 2000):edges[k + 1]], "band", [fc * 0.6, fc * 1.6], 2)
+        out[edges[k]:edges[k + 1]] = seg[-(edges[k + 1] - edges[k]):]
+    x = np.linspace(0, 1, n)
+    env_ = np.where(x < 0.6, (x / 0.6) ** 2.2, ((1 - x) / 0.4) ** 1.5)
+    out = norm_rms(out * env_, -24)
+    pan = np.clip(0.5 + (0.45 * (x - 0.5) * 2 if pan_sweep else 0), 0.05, 0.95)
+    return np.stack([out * (1 - pan) * 1.4, out * pan * 1.4], 1)
+
+
+def swell(length, seed):
+    """Soft reversed-reverb swell for dissolves (burn / flash / fog)."""
+    nb = filt(np.random.default_rng(seed).standard_normal(int(0.06 * SR)), "band", [200, 3500], 2)
+    w_ = conv_st(nb, reverb_ir(length, length / 3, seed))[: int(length * SR)][::-1]
+    return w_ / np.abs(w_).max() * db(-20)
+
+
+trans = np.zeros((N, 2))
+for k, c in enumerate(WHOOSH_CUTS):
+    place(trans, whoosh(0.55, 500 + k), c - 0.6 * 0.55)
+for k, c in enumerate(SWELL_CUTS):
+    s_ = swell(0.9, 600 + k)
+    place(trans, s_, c - len(s_) / SR + 0.05)
+
 # ---------------------------------------------------------------- ringing swell
 ring = np.zeros(N)
 i0, i1 = int(RING_START * SR), int(RING_END * SR)
@@ -242,7 +277,7 @@ place(whoosh_rr, nw, CUTS[-2] - n / SR + 0.04)          # lands on the 56.3 s cu
 
 # ---------------------------------------------------------------- mix
 bed = (drone * duck[:, None] + wind * duck[:, None] + twigs + heart * duck_light[:, None])
-fx = booms + (glitch + ring) * duck_heavy[:, None] + whoosh_rr
+fx = booms + (glitch + ring + trans) * duck_heavy[:, None] + whoosh_rr
 # everything thins out once the ringing cuts: let the last line breathe
 after = np.clip((t - RING_END) / 0.05, 0, 1)
 bed *= (1 - 0.55 * after)[:, None]

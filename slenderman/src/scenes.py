@@ -383,7 +383,7 @@ class Polaroids(Scene):
             img = np.clip((g + (img - g) * 0.55) * np.array([1.08, 1.0, 0.86], np.float32) * 1.1 + 0.04, 0, 1)
             self.photos.append(old_photo(img, seed, sepia=0.0, border=0.06, bottom=0.26) if False else self._polaroid(img, seed))
         self.places = [(420, 760, -8.0), (790, 1020, 6.0), (590, 1290, -2.0)]
-        tl_times = [0.15, 1.75, 3.45]
+        tl_times = [-1.0, 1.75, 3.45]   # first photo is already on the table when the whip lands
         self.times = [s + x for x in tl_times]
         self.table = table
         self.cache = {}
@@ -678,6 +678,13 @@ CLASSES = dict(hook=Hook, forum=Forum, photo=Photo, layer=Layer, spread=Spread, 
                polaroids=Polaroids, camcorder=Camcorder, sightings=Sightings, twist=Twist, screens=Screens,
                viewer=Viewer, final=Final, black=Black)
 _cache = {}
+
+
+def get_scene(name):
+    if name not in _cache:
+        s, e = [(s, e) for s, e, n in SCENES if n == name][0]
+        _cache[name] = CLASSES[name](s, e)
+    return _cache[name]
 
 
 def scene_at(t):

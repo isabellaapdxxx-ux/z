@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from art import font
 from config import BLACK, DUR, FPS, GLITCH_CUTS, H, MINI_GLITCHES, W
 import scenes
+import transitions
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 B = os.path.join(ROOT, "build")
@@ -183,7 +184,6 @@ class Post:
     def apply(self, img, t, fi, scene):
         if scene.__class__.__name__ == "Black":
             return img
-        img = np.clip(img, 0, 1.5) * np.asarray(scene.grade, np.float32)
         img = np.power(np.clip(img, 0, None), 1.08) * 1.04 + 0.012
         img *= self.flicker[fi]
         img *= self.vig
@@ -207,7 +207,13 @@ def render_frame(fi):
         _post = Post()
     t = fi / FPS
     name, sc = scenes.scene_at(t)
-    img = sc.frame(t)
+    graded = lambda s_: np.clip(s_.frame(t), 0, 1.5) * np.asarray(s_.grade, np.float32)
+    tr = transitions.active(t)
+    if tr is not None:
+        kind, p, opts, a, b = tr
+        img = transitions.apply(kind, graded(scenes.get_scene(a)), graded(scenes.get_scene(b)), p, opts, fi)
+    else:
+        img = graded(sc)
     img = _post.apply(img.astype(np.float32), t, fi, sc)
     return (np.clip(img, 0, 1) * 255 + 0.5).astype(np.uint8)
 
@@ -259,7 +265,7 @@ def preview(times):
         img = render_frame(fi)
         cv2.imwrite(f"{B}/preview/f{t:05.2f}.png", img[..., ::-1])
         thumbs.append(cv2.resize(img, (270, 480), interpolation=cv2.INTER_AREA))
-    cols = 6
+    cols = int(os.environ.get("COLS", 6))
     rows = (len(thumbs) + cols - 1) // cols
     sheet = np.zeros((rows * 480, cols * 270, 3), np.uint8)
     for i, th in enumerate(thumbs):
