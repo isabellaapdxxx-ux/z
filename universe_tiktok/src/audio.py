@@ -354,7 +354,6 @@ def sfx_track(tl, ev):
     place(out, rumble(S[15]["end"] - S[15]["start"] + 0.4), S[15]["start"] - 0.1, 1.0)
     # "you are here" pop
     place(out, pop(), ev["s16_dot"], 1.0)
-    place(out, pop() * 0.6, ev["s16_card"], 1.0)
     out = reverb(out, 1.6, 0.18, seed=8)
     # riser into scene 12 stays dry so it cuts hard at the flash -> one beat of silence
     place(out, riser(ev["riser1"] - ev["riser0"]), ev["riser0"], 1.0)

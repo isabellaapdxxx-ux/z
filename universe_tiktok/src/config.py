@@ -44,12 +44,12 @@ LINES = [
     "…but the part we can see is 93 billion light-years across.",
     "Because space itself keeps stretching, carrying galaxies away while their light is still on its way to us.",
     "And beyond that? Nobody knows. It might be infinite.",
-    "So yeah. You're tiny. Follow for more.",
+    "So yeah. You're tiny.",
 ]
 
 # ---------------------------------------------------------------- timing
 LEAD_IN = 0.20          # silence before the first word
-TAIL_MIN = 1.40         # end card hold after the last word
+TAIL_MIN = 1.40         # hold on "you are here" after the last word
 # Pause before line i (index = line number, 1-based). Default for the rest.
 GAP_DEFAULT = 0.30
 GAPS = {

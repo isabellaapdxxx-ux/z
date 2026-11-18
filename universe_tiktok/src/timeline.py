@@ -69,7 +69,7 @@ def build():
                              f"{LEAD_IN + sum(durs) + F + TAIL_MIN:.2f}s")
         k = (room - F) / (G - F)
         gaps = {i: floors[i] + (g - floors[i]) * k for i, g in gaps.items()}
-    else:  # stretch pauses (the remainder becomes end-card tail)
+    else:  # stretch pauses (the remainder becomes the closing hold)
         k = min(GAP_STRETCH_MAX / max(gaps.values()), room / G)
         k = max(1.0, k)
         gaps = {i: g * k for i, g in gaps.items()}

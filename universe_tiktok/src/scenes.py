@@ -58,7 +58,6 @@ def events(tl):
     e["s15_q1"] = word(tl, 15, "nobody")
     e["s15_q2"] = word(tl, 15, "infinite")
     e["s16_dot"] = word(tl, 16, "you're")
-    e["s16_card"] = word(tl, 16, "follow")
     e["riser0"] = S[12]["start"] - 1.6
     e["riser1"] = S[12]["start"]
     e["silence0"] = S[12]["start"]
@@ -864,7 +863,7 @@ def s15(c):
 
 def s16(c):
     t = c.t
-    td, tc = c.lt("s16_dot"), c.lt("s16_card")
+    td = c.lt("s16_dot")
     img = base(c, stars=1.0, streak=2.5 if t < td else 1.0, neb=0.12)
     if t < td:
         p = t / max(td, 0.1)
@@ -874,46 +873,20 @@ def s16(c):
                       alpha=a)
         return img
     dt = t - td
-    da = 1.0 if t < tc else max(0.35, 1 - (t - tc) / 0.3)
     dx, dy = 540, 880
-    G.add_glow(img, dx, dy, 4.5, (0.55, 0.75, 1.0), 2.5 * da, halo=0.5 * da, halo_r=14, extent=140)
+    G.add_glow(img, dx, dy, 4.5, (0.55, 0.75, 1.0), 2.5, halo=0.5, halo_r=14, extent=140)
     im, d = rgb_layer()
     for k in range(3):
         ph = ((dt - k * 0.35) / 1.05) % 1.0 if dt - k * 0.35 > 0 else None
         if ph is None:
             continue
         rr = 10 + 110 * ph
-        v = int(200 * (1 - ph) ** 2 * da)
+        v = int(200 * (1 - ph) ** 2)
         d.ellipse([dx - rr, dy - rr, dx + rr, dy + rr], outline=(v // 2, int(v * 0.8), v), width=3)
-    d.line([(dx + 22, dy - 22), (dx + 95, dy - 95)], fill=(int(230 * da),) * 3, width=4)
+    d.line([(dx + 22, dy - 22), (dx + 95, dy - 95)], fill=(230, 230, 230), width=4)
     add_rgb_layer(img, im, 1.0, glow=6, glow_k=1.0)
-    label(img, "you are here", dy - 140, t, td, size=58, color=YELLOW, glow=GOLD_GLOW, pop=0.5,
-          alpha=da, x=600)
-    if t >= tc:
-        dc = t - tc
-        img *= 1 - 0.35 * min(1.0, dc / 0.25)
-        s = pop_scale(dc, 0.3, 0.55) * (1 + 0.02 * np.sin(dc * 5))
-        f1 = G.text_rgba("Follow", 150, fill=WHITE, stroke=9, max_w=700)
-        G.glow_text(img, f1, CX, 770, (1.0, 0.2, 0.45), k=1.2, radius=26, scale=s, alpha=min(1, dc / 0.08))
-        f2 = for_more_sprite()
-        G.glow_text(img, f2, CX, 925, (0.2, 0.9, 1.0), k=0.9, radius=22, scale=pop_scale(dc - 0.08, 0.3, 0.55),
-                    alpha=float(np.clip((dc - 0.08) / 0.08, 0, 1)))
+    label(img, "you are here", dy - 140, t, td, size=58, color=YELLOW, glow=GOLD_GLOW, pop=0.5, x=600)
     return img
-
-
-_FM = None
-
-
-def for_more_sprite():
-    global _FM
-    if _FM is None:
-        txt = G.text_rgba("for more", 100, fill=WHITE, stroke=7, max_w=600)
-        em = G.emoji_rgba("🚀", int(txt.height * 0.95))
-        out = Image.new("RGBA", (txt.width + 24 + em.width, max(txt.height, em.height)), (0, 0, 0, 0))
-        out.paste(txt, (0, (out.height - txt.height) // 2), txt)
-        out.paste(em, (txt.width + 24, (out.height - em.height) // 2), em)
-        _FM = out
-    return _FM
 
 
 SCENES = {1: s1, 2: s2, 3: s3, 4: s4, 5: s5, 6: s6, 7: s7, 8: s8, 9: s9, 10: s10, 11: s11,

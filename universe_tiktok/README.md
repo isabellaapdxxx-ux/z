@@ -19,7 +19,7 @@ Voice clips are cached in `build/tts/`. A rebuild only calls edge-tts again when
 | Step | File | What it does |
 |---|---|---|
 | Voice | `src/tts.py` | One edge-tts clip per line (`en-US-AndrewMultilingualNeural`, rate +8%, with word boundaries). Silence around each line is trimmed and pauses inside a line are capped at 0.28 s. If the main voice keeps failing, every line switches to `en-US-GuyNeural` together, so the voice never changes partway through. |
-| Timing | `src/timeline.py` | Measures the clips. The raw speech is 60.8 s, so it is sped up with `atempo` (capped at 1.10). The pauses between lines are then fitted so the voice ends at 58.6 s, followed by a 1.4 s end-card hold. Scene cuts land on frames; the cut into each scene starts about 0.2 s before its line. Writes `build/timeline.json`. |
+| Timing | `src/timeline.py` | Measures the clips. The raw speech is 60.8 s, so it is sped up with `atempo` (capped at 1.10). The pauses between lines are then fitted so the voice ends at 58.6 s, followed by a 1.4 s hold on the closing "you are here" shot. Scene cuts land on frames; the cut into each scene starts about 0.2 s before its line. Writes `build/timeline.json`. |
 | Assets | `src/assets.py` | 3-layer parallax starfield (3D, camera flies along z), nebula, Earth/Moon/Sun shaders, particle spiral galaxies (log-spiral arms), 3D cosmic web, Hubble Deep Field texture (about 3,600 galaxies), and the Voyager-style probe sprite. |
 | Scenes | `src/scenes.py` | The 16 scenes, plus the events (word-synced moments) shared with the audio. |
 | Captions | `src/captions.py` | 2–4 words at a time from edge-tts word timings, Poppins Bold, black outline, current word in yellow. The box is centred at (515, 1195): inside the middle third, never in the bottom 300 px or the right 150 px. |
@@ -27,4 +27,4 @@ Voice clips are cached in `build/tts/`. A rebuild only calls edge-tts again when
 | Sound | `src/audio.py` | Detuned-saw ambient pad with a time-varying low-pass sweep, sub, shimmer and a post-drop pulse. The music builds through scenes 5–11, cuts to silence for the beat before "Now the crazy part", then comes back bigger. Also synthesizes whooshes (pitch varied per transition), timer ticks, radio beeps, shimmer, riser, sub boom with glitch, rumble and pop. Music is ducked under the voice with `sidechaincompress`, and the final mix is normalized with two-pass `loudnorm` to -14 LUFS (true peak -1.5 dB) at exactly 2,880,000 samples. |
 | Build | `build.py` | Runs everything, exports the check frames to `build/check_frames/`, muxes the result and checks it with ffprobe. |
 
-Fonts: Poppins Bold/ExtraBold (SIL OFL, from Google Fonts) in `fonts/`. The rocket on the end card is Noto Color Emoji.
+Fonts: Poppins Bold/ExtraBold (SIL OFL, from Google Fonts) in `fonts/`.
